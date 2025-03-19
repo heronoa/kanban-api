@@ -39,17 +39,21 @@ Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar pro
 ```
 kanban-api/
 │── src/
-│   ├── modules/
-│   │   ├── users/
-│   │   ├── projects/
-│   │   ├── tasks/
-│   ├── config/
-│   ├── middlewares/
-│   ├── routes/
-│   ├── shared/
-│   ├── database/
-│   │   ├── migrations/
-│   │   ├── seeders/
+│   ├── application/
+│   │   ├── use-cases/
+│   ├── domain/
+│   │   ├── entities/
+│   │   ├── repositories/
+│   ├── infrastructure/
+│   │   ├── database/
+│   │   │   ├── migrations/
+│   │   │   ├── seeders/
+│   │   ├── http/
+│   │   │   ├── controllers/
+│   │   │   ├── middlewares/
+│   │   │   ├── routes/
+│   │   ├── security/
+│   │   ├── logging/
 │   ├── tests/
 │── docs/
 │── .env
@@ -57,7 +61,39 @@ kanban-api/
 │── package.json
 │── tsconfig.json
 │── README.md
+
 ```
+
+## Rotas da API
+
+### Autenticação
+
+- `POST /auth/login` - Login de usuário
+- `POST /auth/register` - Registro de usuário
+
+### Usuários
+
+- `GET /users` - Listar usuários (paginação)
+- `GET /users/:id` - Obter detalhes de um usuário
+- `PUT /users/:id` - Atualizar usuário
+- `DELETE /users/:id` - Remover usuário
+
+### Projetos
+
+- `POST /projects` - Criar um projeto
+- `GET /projects` - Listar projetos (paginação e filtros)
+- `GET /projects/:id` - Obter detalhes de um projeto
+- `PUT /projects/:id` - Atualizar projeto
+- `DELETE /projects/:id` - Remover projeto
+
+### Tarefas
+
+- `POST /tasks` - Criar uma tarefa
+- `GET /tasks` - Listar tarefas (paginação e filtros)
+- `GET /tasks/:id` - Obter detalhes de uma tarefa
+- `PUT /tasks/:id` - Atualizar tarefa
+- `PATCH /tasks/:id/move` - Mover tarefa entre projetos
+- `DELETE /tasks/:id` - Remover tarefa
 
 ## Como Executar
 
