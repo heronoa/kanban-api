@@ -6,14 +6,23 @@ import { LoginUseCase } from '@/application/use-cases/login.use-case';
 import { RegisterUseCase } from '@/application/use-cases/register.use-case';
 import { UserRepository } from '@/domain/repositories/user.repository';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtModule } from '@nestjs/jwt';
 import { CreateTokenUseCase } from '@/application/use-cases/create-token.use-case';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    JwtModule.register({
-      secret: process.env.JWT_SECRET,
-      signOptions: { expiresIn: '1d' },
+    JwtModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => {
+        const secret = configService.get<string>('JWT_SECRET');
+        console.log('JWT_SECRET:', secret);
+        return {
+          secret: secret,
+          signOptions: { expiresIn: '1d' },
+        };
+      },
+      inject: [ConfigService],
     }),
   ],
   providers: [
@@ -22,7 +31,6 @@ import { CreateTokenUseCase } from '@/application/use-cases/create-token.use-cas
     RegisterUseCase,
     UserRepository,
     PrismaService,
-    JwtService,
   ],
   controllers: [AuthController],
 })

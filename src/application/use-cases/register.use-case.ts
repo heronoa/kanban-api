@@ -37,7 +37,7 @@ export class RegisterUseCase {
       role: 'USER',
     });
 
-    const token = this.createTokenUseCase.execute(user);
+    const token = await this.createTokenUseCase.execute(user);
 
     return { user, token };
   }
