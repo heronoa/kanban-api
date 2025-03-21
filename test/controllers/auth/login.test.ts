@@ -1,11 +1,15 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '@/infrastructure/http/controllers/auth/auth.controller';
 import { LoginUseCase } from '@/application/use-cases/login.use-case';
+import { RegisterUseCase } from '@/application/use-cases/register.use-case';
+import { JwtService } from '@nestjs/jwt';
 import { AuthResponseDto } from '@/domain/dto/auth-reponse.dto';
 
 describe('AuthController - Login', () => {
   let authController: AuthController;
   let loginUseCase: LoginUseCase;
+  // let registerUseCase: RegisterUseCase;
+  let jwtService: JwtService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,14 +19,23 @@ describe('AuthController - Login', () => {
           provide: LoginUseCase,
           useValue: { execute: jest.fn() },
         },
+        {
+          provide: RegisterUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: JwtService,
+          useValue: { sign: jest.fn() },
+        },
       ],
     }).compile();
 
     authController = module.get<AuthController>(AuthController);
     loginUseCase = module.get<LoginUseCase>(LoginUseCase);
+    jwtService = module.get<JwtService>(JwtService);
   });
 
-  it('deve realizar login com sucesso e retornar um token', async () => {
+  it('should successfully login and return a token', async () => {
     const mockToken: AuthResponseDto = {
       token: 'token',
       user: {
@@ -33,7 +46,9 @@ describe('AuthController - Login', () => {
         createdAt: new Date(),
       },
     };
+
     jest.spyOn(loginUseCase, 'execute').mockResolvedValue(mockToken);
+    jest.spyOn(jwtService, 'sign').mockReturnValue('mockToken');
 
     const result = await authController.login({
       email: 'test@email.com',

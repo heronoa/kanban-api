@@ -88,9 +88,9 @@
       "ts"
     ],
     "moduleNameMapper": {
-      "^@/(.*)$": "<rootDir>/$1"
+      "^@/(.*)$": "<rootDir>/src/$1"
     },
-    "rootDir": "src",
+    "rootDir": ".",
     "testRegex": ".*\\.test\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
