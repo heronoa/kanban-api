@@ -1,13 +1,24 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { INestApplication, ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './infrastructure/filters/all-exceptions.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import helmet from 'helmet';
 
-async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+function configureCors(app: INestApplication) {
+  app.enableCors({
+    origin: process.env?.FRONTEND_URL ?? '*',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
+  });
+}
+
+function setGlobalPrefix(app: INestApplication) {
   app.setGlobalPrefix('api/v1');
+}
 
+function setupSwagger(app: INestApplication) {
   const config = new DocumentBuilder()
     .setTitle('Kanban API')
     .setDescription('Documentação da API de Kanban')
@@ -17,7 +28,9 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api/v1/docs', app, document);
+}
 
+function useGlobalPipes(app: INestApplication) {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
@@ -25,8 +38,57 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     }),
   );
+}
 
+function useGlobalFilters(app: INestApplication) {
   app.useGlobalFilters(new AllExceptionsFilter());
+}
+
+function configureHelmet(app: INestApplication) {
+  if (process.env.NODE_ENV === 'production') {
+    app.use(
+      helmet({
+        contentSecurityPolicy: {
+          directives: {
+            defaultSrc: ["'self'"],
+            scriptSrc: ["'self'", "'unsafe-inline'"],
+            objectSrc: ["'none'"],
+            upgradeInsecureRequests: [],
+          },
+        },
+        frameguard: {
+          action: 'deny',
+        },
+        dnsPrefetchControl: {
+          allow: false,
+        },
+        hsts: {
+          maxAge: 31536000,
+          includeSubDomains: true,
+        },
+        xssFilter: true,
+      }),
+    );
+  } else {
+    app.use(
+      helmet({
+        contentSecurityPolicy: false,
+        frameguard: { action: 'sameorigin' },
+        hsts: false,
+        xssFilter: false,
+      }),
+    );
+  }
+}
+
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
+  configureCors(app);
+  setGlobalPrefix(app);
+  setupSwagger(app);
+  useGlobalPipes(app);
+  useGlobalFilters(app);
+  configureHelmet(app);
 
   await app.listen(process.env.PORT ?? 3000);
 }
