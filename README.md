@@ -1,4 +1,4 @@
-# Kanban API - Backend Sênior
+# Kanban API
 
 ## Descrição
 
