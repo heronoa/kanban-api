@@ -12,6 +12,16 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
+    "prisma:migrate": "prisma migrate dev --schema=src/infrastructure/database/prisma/schema.prisma",
+    "prisma:generate": "prisma generate --schema=src/infrastructure/database/prisma/schema.prisma",
+    "prisma:studio": "prisma studio --schema=src/infrastructure/database/prisma/schema.prisma",
+    "prisma:reset": "prisma migrate reset --schema=src/infrastructure/database/prisma/schema.prisma",
+    "prisma:seed": "ts-node src/infrastructure/database/prisma/seed.ts",
+    "prisma:generate:seed": "ts-node src/infrastructure/database/prisma/generateSeed.ts",
+    "prisma:generate:seed:dev": "ts-node src/infrastructure/database/prisma/generateSeed.ts --env=dev",
+    "prisma:generate:seed:prod": "ts-node src/infrastructure/database/prisma/generateSeed.ts --env=prod",
+    "prisma:generate:seed:test": "ts-node src/infrastructure/database/prisma/generateSeed.ts --env=test",
+    "prisma:generate:seed:local": "ts-node src/infrastructure/database/prisma/generateSeed.ts --env=local",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
@@ -74,8 +84,11 @@
       "json",
       "ts"
     ],
+    "moduleNameMapper": {
+      "^@/(.*)$": "<rootDir>/$1"
+    },
     "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "testRegex": ".*\\.test\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
