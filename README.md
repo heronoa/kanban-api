@@ -55,6 +55,9 @@ kanban-api/
 │   │   ├── security/
 │   │   ├── logging/
 │   ├── tests/
+│   │   ├── db/
+│   │   ├── repositories/
+│   │   ├── controllers/
 │── docs/
 │── .env
 │── .gitignore
