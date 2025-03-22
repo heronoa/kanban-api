@@ -1,4 +1,4 @@
-# Kanban API - Backend Sênior
+# Kanban API
 
 ## Descrição
 
@@ -76,6 +76,7 @@ kanban-api/
 
 ### Usuários
 
+- `GET /users/profile` - Obter detalher de um usuário baseado no token de acesso usado
 - `GET /users` - Listar usuários (paginação)
 - `GET /users/:id` - Obter detalhes de um usuário
 - `PUT /users/:id` - Atualizar usuário

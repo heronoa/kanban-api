@@ -7,8 +7,6 @@ export class ProfileUserUseCase {
   constructor(private readonly userRepository: UserRepository) {}
 
   async execute(id: string): Promise<User> {
-    console.log({ id });
-
     const user = await this.userRepository.findById(id);
 
     if (!user) {
