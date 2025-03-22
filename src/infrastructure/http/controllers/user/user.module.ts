@@ -1,12 +1,12 @@
 import { Module } from '@nestjs/common';
-import { AuthController } from './auth.controller';
-import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
-import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
+import { UserController } from './user.controller';
 import { UserRepository } from '@/domain/repositories/user.repository';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { AuthGuard } from '../../middlewares/AuthGuard/auth.guard';
+import { ListUserUseCase } from '@/application/use-cases/user/list-users.use-case';
 import { JwtModule } from '@nestjs/jwt';
-import { CreateTokenUseCase } from '@/application/use-cases/auth/create-token.use-case';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ProfileUserUseCase } from '@/application/use-cases/user/get-profile.use-case';
 
 @Module({
   imports: [
@@ -23,12 +23,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
   ],
   providers: [
-    CreateTokenUseCase,
-    LoginUseCase,
-    RegisterUseCase,
     UserRepository,
     PrismaService,
+    AuthGuard,
+    ListUserUseCase,
+    ProfileUserUseCase,
   ],
-  controllers: [AuthController],
+  controllers: [UserController],
 })
-export class AuthModule {}
+export class UserModule {}

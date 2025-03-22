@@ -1,13 +1,18 @@
 import { Controller, Post, Body } from '@nestjs/common';
-import { LoginDto } from '@/domain/dto/login.dto';
-import { AuthResponseDto } from '@/domain/dto/auth-reponse.dto';
-import { LoginUseCase } from '@/application/use-cases/login.use-case';
-import { RegisterUseCase } from '@/application/use-cases/register.use-case';
-import { RegisterDto } from '@/domain/dto/register.dto';
+import { LoginDto } from '@/domain/dto/auth/login.dto';
+import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
+import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
+import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
+import { RegisterDto } from '@/domain/dto/auth/register.dto';
 import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
+interface AuthControllerType {
+  login: (loginDto: LoginDto) => Promise<AuthResponseDto>;
+  register: (registerDto: RegisterDto) => Promise<AuthResponseDto>;
+}
+
 @Controller('auth')
-export class AuthController {
+export class AuthController implements AuthControllerType {
   constructor(
     private readonly loginUseCase: LoginUseCase,
     private readonly registerUseCase: RegisterUseCase,

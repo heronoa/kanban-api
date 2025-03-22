@@ -25,11 +25,11 @@ model User {
 model Project {
   id          String   @id @default(uuid())
   name        String
-  description String?  // Corrigido para description
+  description String?  
   ownerId     String
   owner       User     @relation(fields: [ownerId], references: [id], onDelete: Cascade)
   tasks       Task[]   @relation("ProjectTasks")
-  users       User[]   @relation("UserProjects") // Relação muitos-para-muitos com User
+  users       User[]   @relation("UserProjects") 
   createdAt   DateTime @default(now())
 
   Task Task[]
@@ -44,7 +44,7 @@ model Task {
   project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   assignedTo  String?
   user        User?     @relation(fields: [assignedTo], references: [id], onDelete: SetNull)
-  users       User[]    @relation("UserTasks")  // Relação muitos-para-muitos com User
+  users       User[]    @relation("UserTasks")  
   createdAt   DateTime  @default(now())
 
   Project Project[] @relation("ProjectTasks")

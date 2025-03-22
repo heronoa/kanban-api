@@ -6,6 +6,7 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { SuccessLoggerInterceptor } from './infrastructure/filters/success.interceptor';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { UserModule } from './infrastructure/http/controllers/user/user.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
       isGlobal: true,
     }),
     AuthModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [

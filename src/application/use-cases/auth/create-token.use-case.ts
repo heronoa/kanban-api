@@ -1,3 +1,4 @@
+import { UserResponse } from '@/domain/dto/auth/auth-reponse.dto';
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 
@@ -5,10 +6,11 @@ import { JwtService } from '@nestjs/jwt';
 export class CreateTokenUseCase {
   constructor(private readonly jwtService: JwtService) {}
 
-  public async execute(user: { id: string; email: string }): Promise<string> {
+  public async execute(user: UserResponse): Promise<string> {
     return await this.jwtService.signAsync({
-      userId: user.id,
+      id: user.id,
       email: user.email,
+      role: user.role,
     });
   }
 }

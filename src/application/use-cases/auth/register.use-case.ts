@@ -1,10 +1,8 @@
-// src/application/use-cases/register.use-case.ts
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { RegisterDto } from '@/domain/dto/register.dto';
+import { RegisterDto } from '@/domain/dto/auth/register.dto';
 import { UserRepository } from '@/domain/repositories/user.repository';
-import { AuthResponseDto } from '@/domain/dto/auth-reponse.dto';
+import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
 import { CreateTokenUseCase } from './create-token.use-case';
 
 @Injectable()

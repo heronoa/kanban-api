@@ -1,9 +1,7 @@
-// src/application/use-cases/login.use-case.ts
-
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
-import { LoginDto } from '@/domain/dto/login.dto';
-import { AuthResponseDto } from '@/domain/dto/auth-reponse.dto';
+import { LoginDto } from '@/domain/dto/auth/login.dto';
+import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
 import { UserRepository } from '@/domain/repositories/user.repository';
 import { CreateTokenUseCase } from './create-token.use-case';
 

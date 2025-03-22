@@ -23,7 +23,7 @@ function setupSwagger(app: INestApplication) {
     .setTitle('Kanban API')
     .setDescription('Documentação da API de Kanban')
     .setVersion('1.0')
-    .addBearerAuth() // Adiciona autenticação via Bearer Token (JWT)
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
