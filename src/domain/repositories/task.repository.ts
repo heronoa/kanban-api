@@ -3,6 +3,7 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 
 import { Task } from '@prisma/client';
 import { Task as TaskDTO } from '../dto/task/task.dto';
+import { UserResponse } from '../dto/auth/auth-reponse.dto';
 
 interface TaskRepositoryType {
   create(data: TaskDTO): Promise<Task>;
@@ -30,6 +31,9 @@ interface TaskRepositoryType {
     perPage: number;
   }): Promise<{ tasks: Task[]; totalCount: number }>;
   findTasksByIdAndUserId(taskId: string, userId: string): Promise<Task | null>;
+  addUserToTask(taskId: string, userId: string): Promise<Task>;
+  removeUserFromTask(taskId: string, userId: string): Promise<Task>;
+  listUsersTask(userId: string): Promise<Task[]>;
 }
 
 @Injectable()
@@ -47,6 +51,61 @@ export class TaskRepository implements TaskRepositoryType {
       where: { id },
       include: { users: true },
     });
+  }
+
+  async addUserToTask(taskId: string, userId: string): Promise<Task> {
+    return this.prisma.task.update({
+      where: { id: taskId },
+      data: {
+        users: {
+          connect: { id: userId },
+        },
+      },
+    });
+  }
+
+  async removeUserFromTask(taskId: string, userId: string): Promise<Task> {
+    return this.prisma.task.update({
+      where: { id: taskId },
+      data: {
+        users: {
+          disconnect: { id: userId },
+        },
+      },
+    });
+  }
+
+  async listUsersTask(userId: string): Promise<Task[]> {
+    return this.prisma.task.findMany({
+      where: {
+        users: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+    });
+  }
+
+  async listUserOnTask(taskId: string): Promise<UserResponse[]> {
+    const task = await this.prisma.task.findUnique({
+      where: {
+        id: taskId,
+      },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            createdAt: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return task?.users || [];
   }
 
   async findAllTasksPaginated({

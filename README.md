@@ -20,19 +20,39 @@ Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar pro
 
 ## Funcionalidades
 
-- CRUD completo para Usuário, Projeto e Tarefa
-- Autenticação via JWT
-- Implementação de RBAC (controle de acesso baseado em papéis)
-- Paginação nas listagens
-- Filtragem de tarefas por status e projetos
-- Endpoint para mover uma tarefa entre projetos
-- Validação de dados
-- Testes automatizados
-- Registro de logs estruturados
-- Tratamento global de erros
-- Documentação com Swagger
-- Migrações para o banco de dados
-- CI/CD e deploy na nuvem
+### Autenticação
+
+- **Login de Usuário**: Verifica as credenciais do usuário e gera um token JWT para autenticação.
+- **Registro de Usuário**: Cria uma nova conta de usuário com as informações fornecidas.
+
+### Usuários
+
+- **Obter Perfil do Usuário**: Recupera os detalhes do usuário autenticado usando o token de acesso.
+- **Listar Usuários**: Retorna uma lista paginada de usuários.
+- **Obter Detalhes de um Usuário**: Fornece informações detalhadas de um usuário específico.
+- **Atualizar Usuário**: Permite a atualização das informações de um usuário.
+- **Remover Usuário**: Exclui um usuário do sistema.
+
+### Projetos
+
+- **Criar Projeto**: Cria um novo projeto com os dados fornecidos.
+- **Listar Projetos**: Retorna uma lista paginada de projetos.
+- **Obter Detalhes de um Projeto**: Fornece informações detalhadas de um projeto específico.
+- **Atualizar Projeto**: Permite a atualização das informações de um projeto.
+- **Remover Projeto**: Exclui um projeto do sistema.
+- **Adicionar Membro ao Projeto**: Adiciona um usuário como membro de um projeto.
+- **Remover Membro do Projeto**: Remove um usuário de um projeto.
+- **Listar Membros do Projeto**: Retorna uma lista de membros de um projeto.
+- **Listar Tarefas do Projeto**: Retorna uma lista de tarefas associadas a um projeto.
+
+### Tarefas
+
+- **Criar Tarefa**: Cria uma nova tarefa com os dados fornecidos.
+- **Listar Tarefas**: Retorna uma lista paginada e filtrada de tarefas.
+- **Obter Detalhes de uma Tarefa**: Fornece informações detalhadas de uma tarefa específica.
+- **Atualizar Tarefa**: Permite a atualização das informações de uma tarefa.
+- **Mover Tarefa entre Projetos**: Permite mover uma tarefa de um projeto para outro.
+- **Remover Tarefa**: Exclui uma tarefa do sistema.
 
 ## Estrutura do Projeto
 
@@ -85,10 +105,14 @@ kanban-api/
 ### Projetos
 
 - `POST /projects` - Criar um projeto
-- `GET /projects` - Listar projetos (paginação e filtros)
+- `GET /projects` - Listar projetos (paginação)
 - `GET /projects/:id` - Obter detalhes de um projeto
 - `PUT /projects/:id` - Atualizar projeto
 - `DELETE /projects/:id` - Remover projeto
+- `POST /projects/:id/members` - Adicionar membro ao projeto
+- `DELETE /projects/:id/members` - Remover membro do projeto
+- `GET /projects/:id/members` - Listar membros do projeto
+- `GET /projects/:id/tasks` - Listar tarefas do projeto
 
 ### Tarefas
 
