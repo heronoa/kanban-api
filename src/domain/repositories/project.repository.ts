@@ -4,7 +4,7 @@ import { Project } from '@prisma/client';
 import { Project as ProjectDTO } from '@/domain/dto/project/project.dto';
 
 export interface ProjectRepositoryType {
-  paginatedList({
+  findAllPaginated({
     page,
     perPage,
   }: {
@@ -14,6 +14,7 @@ export interface ProjectRepositoryType {
   create(user: ProjectDTO): Promise<Project>;
   findByIdAndOrUserId(id: string, userId: string): Promise<Project | null>;
   findAll(): Promise<Project[]>;
+  findById(id: string): Promise<ProjectDTO | null>;
   update(id: string, Project: Partial<Project>): Promise<Project>;
   delete(id: string): Promise<Project>;
   isUserProjectOwner(id: string, userId: string): Promise<boolean>;
@@ -23,7 +24,13 @@ export interface ProjectRepositoryType {
 export class ProjectRepository implements ProjectRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
-  async paginatedList({
+  async findById(id: string): Promise<ProjectDTO | null> {
+    return this.prisma.project.findUnique({
+      where: { id },
+    });
+  }
+
+  async findAllPaginated({
     page,
     perPage,
     userId,

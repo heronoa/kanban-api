@@ -1,4 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { ListDTO } from '../list.dto';
 
 class UserResponse {
   id: string;
@@ -21,19 +22,7 @@ export class AuthResponseDto {
   token: string;
 }
 
-export class ListUserDTO {
+export class ListUserDTO extends ListDTO {
   @ApiProperty({ type: Array<UserResponse> })
   users: Array<UserResponse>;
-
-  @ApiProperty()
-  totalCount: number;
-
-  @ApiProperty()
-  page: number;
-
-  @ApiProperty()
-  perPage: number;
-
-  @ApiProperty()
-  totalPages: number;
 }

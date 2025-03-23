@@ -16,13 +16,12 @@ export class ListProjectsUseCase {
     perPage?: number;
     user: User;
   }): Promise<ListProjectDTO> {
-    const { projects, totalCount } = await this.projectRepository.paginatedList(
-      {
+    const { projects, totalCount } =
+      await this.projectRepository.findAllPaginated({
         page,
         perPage: perPage,
         userId: user && user.role === 'USER' ? user.id : undefined,
-      },
-    );
+      });
 
     const totalPages = Math.ceil(totalCount / perPage);
 
