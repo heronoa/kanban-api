@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Project } from '@prisma/client';
 import { Project as ProjectDTO } from '@/domain/dto/project/project.dto';
+import { Task } from '../dto/task/task.dto';
+import { UserResponse } from '../dto/auth/auth-reponse.dto';
 
 export interface ProjectRepositoryType {
   findAllPaginated({
@@ -18,6 +20,7 @@ export interface ProjectRepositoryType {
   update(id: string, Project: Partial<Project>): Promise<Project>;
   delete(id: string): Promise<Project>;
   isUserProjectOwner(id: string, userId: string): Promise<boolean>;
+  addMember(id: string, memberId: string): Promise<Project>;
 }
 
 @Injectable()
@@ -92,5 +95,64 @@ export class ProjectRepository implements ProjectRepositoryType {
     return this.prisma.project.delete({
       where: { id },
     });
+  }
+
+  async addMember(id: string, memberId: string): Promise<Project> {
+    return this.prisma.project.update({
+      where: { id },
+      data: {
+        users: {
+          connect: { id: memberId },
+        },
+      },
+    });
+  }
+
+  async removeMember(id: string, memberId: string): Promise<Project> {
+    return this.prisma.project.update({
+      where: { id },
+      data: {
+        users: {
+          disconnect: { id: memberId },
+        },
+      },
+    });
+  }
+
+  async listMembers(id: string): Promise<UserResponse[]> {
+    const project = await this.prisma.project.findUnique({
+      where: { id },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            createdAt: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return project?.users || [];
+  }
+
+  async listTasks(id: string): Promise<Task[]> {
+    const project = await this.prisma.project.findUnique({
+      where: { id },
+      include: { tasks: true },
+    });
+
+    return project?.tasks || [];
+  }
+
+  async isUserProjectMember(id: string, userId: string): Promise<boolean> {
+    const project = await this.prisma.project.findUnique({
+      where: { id },
+      select: { users: { where: { id: userId } } },
+    });
+
+    return project ? project.users.length > 0 : false;
   }
 }

@@ -11,10 +11,16 @@ import { ProjectRepository } from '@/domain/repositories/project.repository';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AuthGuard } from '@/infrastructure/http/middlewares/AuthGuard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { RemoveMemberToProjectsUseCase } from '@/application/use-cases/projects/remove-member-project.use-case';
+import { AddMemberToProjectsUseCase } from '@/application/use-cases/projects/add-member-project.use-case';
+import { ListProjectsMembersUseCase } from '@/application/use-cases/projects/list-projects-member.use-case';
+import { ListProjectsTasksUseCase } from '@/application/use-cases/projects/list-projects-tasks.use-case';
 
-describe('ProjectsController - Update Project', () => {
+describe('ProjectsController', () => {
   let projectsController: ProjectsController;
   let updateProjectUseCase: UpdateProjectUseCase;
+  let addMemberToProjectsUseCase: AddMemberToProjectsUseCase;
+  let removeMemberToProjectsUseCase: RemoveMemberToProjectsUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -24,6 +30,14 @@ describe('ProjectsController - Update Project', () => {
           provide: UpdateProjectUseCase,
           useValue: { execute: jest.fn() },
         },
+        {
+          provide: AddMemberToProjectsUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: RemoveMemberToProjectsUseCase,
+          useValue: { execute: jest.fn() },
+        },
         CreateProjectUseCase,
         DeleteProjectUseCase,
         ListProjectsUseCase,
@@ -31,6 +45,8 @@ describe('ProjectsController - Update Project', () => {
         AuthGuard,
         ProjectRepository,
         PrismaService,
+        ListProjectsMembersUseCase,
+        ListProjectsTasksUseCase,
         JwtService,
       ],
     }).compile();
@@ -38,6 +54,12 @@ describe('ProjectsController - Update Project', () => {
     projectsController = module.get<ProjectsController>(ProjectsController);
     updateProjectUseCase =
       module.get<UpdateProjectUseCase>(UpdateProjectUseCase);
+    addMemberToProjectsUseCase = module.get<AddMemberToProjectsUseCase>(
+      AddMemberToProjectsUseCase,
+    );
+    removeMemberToProjectsUseCase = module.get<RemoveMemberToProjectsUseCase>(
+      RemoveMemberToProjectsUseCase,
+    );
   });
 
   describe('Update Project', () => {
@@ -88,6 +110,86 @@ describe('ProjectsController - Update Project', () => {
       await expect(
         projectsController.updateProject(req, invalidData, '1'),
       ).rejects.toThrow('Invalid data');
+    });
+  });
+
+  describe('Add Member to Project', () => {
+    it('should add a member to a project', async () => {
+      const mockProject = {
+        id: '1',
+        name: 'Project 1',
+        ownerId: '1',
+        description: 'Project description',
+      };
+      jest
+        .spyOn(addMemberToProjectsUseCase, 'execute')
+        .mockResolvedValue(mockProject);
+
+      const req = { user: { id: 'user1', role: 'ADMIN' } } as AuthRequest;
+      const result = await projectsController.addMemberToProject(
+        req,
+        '1',
+        'user2',
+      );
+
+      expect(result).toEqual(mockProject);
+      expect(addMemberToProjectsUseCase.execute).toHaveBeenCalledWith({
+        id: '1',
+        userId: 'user2',
+        userRole: 'ADMIN',
+        memberId: 'user2',
+      });
+    });
+
+    it('should throw an error if member cannot be added', async () => {
+      jest
+        .spyOn(addMemberToProjectsUseCase, 'execute')
+        .mockRejectedValue(new Error('Cannot add member'));
+
+      const req = { user: { id: 'user1', role: 'ADMIN' } } as AuthRequest;
+      await expect(
+        projectsController.addMemberToProject(req, '1', 'user2'),
+      ).rejects.toThrow('Cannot add member');
+    });
+  });
+
+  describe('Remove Member from Project', () => {
+    it('should remove a member from a project', async () => {
+      const mockProject = {
+        id: '1',
+        name: 'Project 1',
+        ownerId: '1',
+        description: 'Project description',
+      };
+      jest
+        .spyOn(removeMemberToProjectsUseCase, 'execute')
+        .mockResolvedValue(mockProject);
+
+      const req = { user: { id: 'user1', role: 'ADMIN' } } as AuthRequest;
+      const result = await projectsController.removeMemberFromProject(
+        req,
+        '1',
+        'user2',
+      );
+
+      expect(result).toEqual(mockProject);
+      expect(removeMemberToProjectsUseCase.execute).toHaveBeenCalledWith({
+        id: '1',
+        userId: 'user2',
+        userRole: 'ADMIN',
+        memberId: 'user2',
+      });
+    });
+
+    it('should throw an error if member cannot be removed', async () => {
+      jest
+        .spyOn(removeMemberToProjectsUseCase, 'execute')
+        .mockRejectedValue(new Error('Cannot remove member'));
+
+      const req = { user: { id: 'user1', role: 'ADMIN' } } as AuthRequest;
+      await expect(
+        projectsController.removeMemberFromProject(req, '1', 'user2'),
+      ).rejects.toThrow('Cannot remove member');
     });
   });
 });

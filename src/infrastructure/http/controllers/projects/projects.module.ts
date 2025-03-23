@@ -10,6 +10,10 @@ import { CreateProjectUseCase } from '@/application/use-cases/projects/create-pr
 import { UpdateProjectUseCase } from '@/application/use-cases/projects/update-project.use-case';
 import { DeleteProjectUseCase } from '@/application/use-cases/projects/delete-project.use-case';
 import { GetProjectByIdUseCase } from '@/application/use-cases/projects/get-projects-by-id.use-case';
+import { ListProjectsMembersUseCase } from '@/application/use-cases/projects/list-projects-member.use-case';
+import { ListProjectsTasksUseCase } from '@/application/use-cases/projects/list-projects-tasks.use-case';
+import { AddMemberToProjectsUseCase } from '@/application/use-cases/projects/add-member-project.use-case';
+import { RemoveMemberToProjectsUseCase } from '@/application/use-cases/projects/remove-member-project.use-case';
 
 @Module({
   imports: [
@@ -34,6 +38,10 @@ import { GetProjectByIdUseCase } from '@/application/use-cases/projects/get-proj
     UpdateProjectUseCase,
     DeleteProjectUseCase,
     GetProjectByIdUseCase,
+    ListProjectsMembersUseCase,
+    ListProjectsTasksUseCase,
+    AddMemberToProjectsUseCase,
+    RemoveMemberToProjectsUseCase,
   ],
   controllers: [ProjectsController],
 })

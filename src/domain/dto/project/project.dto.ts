@@ -7,9 +7,8 @@ export class Project {
   @ApiProperty()
   ownerId: string;
 
-  @ApiProperty()
-  description?: string | null;
-
+  @ApiProperty({ type: String })
+  description: string | null;
 
   constructor(partial: Partial<Project>) {
     Object.assign(this, partial);

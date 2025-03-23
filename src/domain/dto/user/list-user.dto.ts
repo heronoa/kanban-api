@@ -2,6 +2,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { ListDTO } from '../list.dto';
 
 class UserResponse {
+  @ApiProperty()
   id: string;
 
   @ApiProperty()
@@ -10,7 +11,7 @@ class UserResponse {
   email: string;
   @ApiProperty()
   role: 'ADMIN' | 'USER';
-
+  @ApiProperty()
   createdAt: Date;
 }
 
