@@ -16,12 +16,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const status =
       exception instanceof HttpException ? exception.getStatus() : 500;
 
-    // Log the error to Winston
     const message =
       exception instanceof Error ? exception.message : 'Unknown error';
     errorLogger.error(`${request.method} ${request.url} - ${message}`);
 
-    // Send the error response to the client
     response.status(status).json({
       statusCode: status,
       message: message,

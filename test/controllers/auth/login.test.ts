@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '@/infrastructure/http/controllers/auth/auth.controller';
-import { LoginUseCase } from '@/application/use-cases/login.use-case';
-import { RegisterUseCase } from '@/application/use-cases/register.use-case';
+import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
+import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
 import { JwtService } from '@nestjs/jwt';
-import { AuthResponseDto } from '@/domain/dto/auth-reponse.dto';
+import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
 
 describe('AuthController - Login', () => {
   let authController: AuthController;
   let loginUseCase: LoginUseCase;
-  // let registerUseCase: RegisterUseCase;
+
   let jwtService: JwtService;
 
   beforeEach(async () => {

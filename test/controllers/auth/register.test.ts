@@ -1,8 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from '@/infrastructure/http/controllers/auth/auth.controller';
-import { RegisterUseCase } from '@/application/use-cases/register.use-case';
-import { AuthResponseDto } from '@/domain/dto/auth-reponse.dto';
-import { LoginUseCase } from '@/application/use-cases/login.use-case';
+import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
+import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
+import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
 import { JwtService } from '@nestjs/jwt';
 
 describe('AuthController - Register', () => {
@@ -20,7 +20,7 @@ describe('AuthController - Register', () => {
         {
           provide: RegisterUseCase,
           useValue: {
-            execute: jest.fn(), // Mock do método execute
+            execute: jest.fn(),
           },
         },
         {

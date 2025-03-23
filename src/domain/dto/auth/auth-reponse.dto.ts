@@ -1,18 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { User } from './user.dto';
 
-class UserResponse {
+export class UserResponse {
+  id: string;
+
   @ApiProperty()
   name: string;
   @ApiProperty()
   email: string;
   @ApiProperty()
   role: 'ADMIN' | 'USER';
+
+  createdAt: Date;
 }
 
 export class AuthResponseDto {
   @ApiProperty({ type: UserResponse })
-  user: Omit<User, 'password'>;
+  user: Omit<UserResponse, 'password'>;
 
   @ApiProperty()
   token: string;

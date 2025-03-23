@@ -1,9 +1,8 @@
 import { createLogger, transports, format } from 'winston';
 import 'winston-daily-rotate-file';
 
-// Formato colorido para o console
 const consoleFormat = format.combine(
-  format.colorize({ all: true }), // Aplica cor em toda a linha
+  format.colorize({ all: true }),
   format.timestamp(),
   format.printf(
     ({
@@ -20,7 +19,6 @@ const consoleFormat = format.combine(
   ),
 );
 
-// Formato sem cor para arquivos
 const fileFormat = format.combine(
   format.timestamp(),
   format.printf(
@@ -41,14 +39,14 @@ const fileFormat = format.combine(
 export const errorLogger = createLogger({
   level: 'error',
   transports: [
-    new transports.Console({ format: consoleFormat }), // Cor no console
+    new transports.Console({ format: consoleFormat }),
     new transports.DailyRotateFile({
       filename: 'logs/%DATE%-error.log',
       datePattern: 'YYYY-MM-DD',
       zippedArchive: true,
       maxSize: '20m',
       maxFiles: '14d',
-      format: fileFormat, // Sem cor no arquivo
+      format: fileFormat,
     }),
   ],
 });
@@ -56,14 +54,14 @@ export const errorLogger = createLogger({
 export const successLogger = createLogger({
   level: 'info',
   transports: [
-    new transports.Console({ format: consoleFormat }), // Cor no console
+    new transports.Console({ format: consoleFormat }),
     new transports.DailyRotateFile({
       filename: 'logs/%DATE%-success.log',
       datePattern: 'YYYY-MM-DD',
       zippedArchive: true,
       maxSize: '20m',
       maxFiles: '14d',
-      format: fileFormat, // Sem cor no arquivo
+      format: fileFormat,
     }),
   ],
 });
