@@ -13,6 +13,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -84,7 +85,7 @@ export class TasksController {
     return this.deleteTaskUseCase.execute({ id, user });
   }
 
-  @Post(':id/move')
+  @Patch(':id/move')
   async moveTask(
     @Request() req: AuthRequest,
     @Param('id') taskId: string,

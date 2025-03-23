@@ -14,7 +14,7 @@ export class ListUserUseCase {
     perPage?: number;
     role?: string;
   }): Promise<ListUserDTO> {
-    const { users, totalCount } = await this.userRepository.paginatedList({
+    const { users, totalCount } = await this.userRepository.findAllPaginated({
       page,
       perPage,
     });

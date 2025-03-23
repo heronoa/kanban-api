@@ -8,6 +8,7 @@ import { SuccessLoggerInterceptor } from './infrastructure/filters/success.inter
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { UserModule } from './infrastructure/http/controllers/user/user.module';
 import { ProjectsModule } from './infrastructure/http/controllers/projects/projects.module';
+import { TaskModule } from './infrastructure/http/controllers/task/task.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ProjectsModule } from './infrastructure/http/controllers/projects/proje
     AuthModule,
     UserModule,
     ProjectsModule,
+    TaskModule,
   ],
   controllers: [AppController],
   providers: [
