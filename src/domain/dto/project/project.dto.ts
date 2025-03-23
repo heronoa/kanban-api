@@ -10,6 +10,7 @@ export class Project {
   @ApiProperty()
   description?: string | null;
 
+
   constructor(partial: Partial<Project>) {
     Object.assign(this, partial);
   }
