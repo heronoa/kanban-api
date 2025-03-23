@@ -1,19 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Project } from './project.dto';
+import { ListDTO } from '../list.dto';
 
-export class ListProjectDTO {
+export class ListProjectDTO extends ListDTO {
   @ApiProperty({ type: Array<Project> })
   projects: Array<Project>;
-
-  @ApiProperty()
-  totalCount: number;
-
-  @ApiProperty()
-  page: number;
-
-  @ApiProperty()
-  perPage: number;
-
-  @ApiProperty()
-  totalPages: number;
 }

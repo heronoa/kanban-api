@@ -15,13 +15,4 @@ export class Task {
   constructor(partial: Partial<Task>) {
     Object.assign(this, partial);
   }
-
-  setStatus(status: 'TO_DO' | 'IN_PROGRESS' | 'DONE'): void {
-    this.status = status;
-  }
-
-  assignTo(user: User): void {
-    this.assignedTo = user.id;
-    this.user = user;
-  }
 }

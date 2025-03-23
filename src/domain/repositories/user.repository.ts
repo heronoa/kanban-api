@@ -10,7 +10,7 @@ interface UserRepositoryType {
   findById(id: string): Promise<User | null>;
   update(id: string, data: Partial<User>): Promise<User>;
   delete(id: string): Promise<User>;
-  paginatedList({
+  findAllPaginated({
     page,
     perPage,
   }: {
@@ -23,7 +23,7 @@ interface UserRepositoryType {
 export class UserRepository implements UserRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
-  async paginatedList({
+  async findAllPaginated({
     page,
     perPage,
   }: {
