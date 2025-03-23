@@ -4,13 +4,14 @@ import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
 import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
 import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
 import { RegisterDto } from '@/domain/dto/auth/register.dto';
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 interface AuthControllerType {
   login: (loginDto: LoginDto) => Promise<AuthResponseDto>;
   register: (registerDto: RegisterDto) => Promise<AuthResponseDto>;
 }
 
+@ApiTags('Authentication')
 @Controller('auth')
 export class AuthController implements AuthControllerType {
   constructor(

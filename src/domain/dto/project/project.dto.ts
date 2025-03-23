@@ -7,7 +7,7 @@ export class Project {
   @ApiProperty()
   ownerId: string;
 
-  @ApiProperty()
+  @ApiProperty({ type: String })
   description: string | null;
 
   constructor(partial: Partial<Project>) {

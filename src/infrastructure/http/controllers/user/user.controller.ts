@@ -18,9 +18,10 @@ import { ProfileUserUseCase } from '@/application/use-cases/user/get-profile.use
 import { UpdateUserUseCase } from '@/application/use-cases/user/update-user.use-case';
 import { DeleteUserUseCase } from '@/application/use-cases/user/delete-user.use-case';
 import { User } from '@/domain/entities/user.entity';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListUserDTO } from '@/domain/dto/user/list-user.dto';
 
+@ApiTags('User Management')
 @Controller('users')
 @UseGuards(AuthGuard)
 export class UserController {

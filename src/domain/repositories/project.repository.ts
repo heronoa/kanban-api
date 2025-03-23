@@ -2,8 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Project } from '@prisma/client';
 import { Project as ProjectDTO } from '@/domain/dto/project/project.dto';
-import { User } from '../dto/user/user.dto';
 import { Task } from '../dto/task/task.dto';
+import { UserResponse } from '../dto/auth/auth-reponse.dto';
 
 export interface ProjectRepositoryType {
   findAllPaginated({
@@ -119,10 +119,20 @@ export class ProjectRepository implements ProjectRepositoryType {
     });
   }
 
-  async listMembers(id: string): Promise<User[]> {
+  async listMembers(id: string): Promise<UserResponse[]> {
     const project = await this.prisma.project.findUnique({
       where: { id },
-      include: { users: true },
+      include: {
+        users: {
+          select: {
+            id: true,
+            email: true,
+            name: true,
+            createdAt: true,
+            role: true,
+          },
+        },
+      },
     });
 
     return project?.users || [];

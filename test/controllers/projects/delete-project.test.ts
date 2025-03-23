@@ -11,6 +11,10 @@ import { ListProjectsUseCase } from '@/application/use-cases/projects/list-proje
 import { UpdateProjectUseCase } from '@/application/use-cases/projects/update-project.use-case';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { AddMemberToProjectsUseCase } from '@/application/use-cases/projects/add-member-project.use-case';
+import { ListProjectsMembersUseCase } from '@/application/use-cases/projects/list-projects-member.use-case';
+import { ListProjectsTasksUseCase } from '@/application/use-cases/projects/list-projects-tasks.use-case';
+import { RemoveMemberToProjectsUseCase } from '@/application/use-cases/projects/remove-member-project.use-case';
 
 describe('ProjectsController - Delete Project', () => {
   let projectsController: ProjectsController;
@@ -31,6 +35,10 @@ describe('ProjectsController - Delete Project', () => {
         CreateProjectUseCase,
         UpdateProjectUseCase,
         GetProjectByIdUseCase,
+        AddMemberToProjectsUseCase,
+        RemoveMemberToProjectsUseCase,
+        ListProjectsMembersUseCase,
+        ListProjectsTasksUseCase,
         JwtService,
       ],
     })

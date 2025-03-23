@@ -20,9 +20,10 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListTaskDTO } from '@/domain/dto/task/list-task.dto';
 
+@ApiTags('Tasks Management')
 @Controller('tasks')
 @UseGuards(AuthGuard)
 export class TasksController {
