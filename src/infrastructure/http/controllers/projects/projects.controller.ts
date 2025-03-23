@@ -18,6 +18,10 @@ import { CreateProjectUseCase } from '@/application/use-cases/projects/create-pr
 import { DeleteProjectUseCase } from '@/application/use-cases/projects/delete-project.use-case';
 import { Project } from '@/domain/dto/project/project.dto';
 import { UpdateProjectUseCase } from '@/application/use-cases/projects/update-project.use-case';
+import { AddMemberToProjectsUseCase } from '@/application/use-cases/projects/add-member-project.use-case';
+import { RemoveMemberToProjectsUseCase } from '@/application/use-cases/projects/remove-member-project.use-case';
+import { ListProjectsMembersUseCase } from '@/application/use-cases/projects/list-projects-member.use-case';
+import { ListProjectsTasksUseCase } from '@/application/use-cases/projects/list-projects-tasks.use-case';
 
 @Controller('projects')
 @UseGuards(AuthGuard)
@@ -28,6 +32,10 @@ export class ProjectsController {
     private createProjectUseCase: CreateProjectUseCase,
     private deleteProjectUseCase: DeleteProjectUseCase,
     private updateProjectUseCase: UpdateProjectUseCase,
+    private addMemberToProjectUseCase: AddMemberToProjectsUseCase,
+    private removeMemberFromProjectUseCase: RemoveMemberToProjectsUseCase,
+    private listProjectMembersUseCase: ListProjectsMembersUseCase,
+    private listProjectTasksUseCase: ListProjectsTasksUseCase,
   ) {}
 
   @Get()
@@ -78,5 +86,54 @@ export class ProjectsController {
     const user = req.user;
 
     return this.deleteProjectUseCase.execute({ id, user });
+  }
+
+  @Post(':id/members')
+  async addMemberToProject(
+    @Request() req: AuthRequest,
+    @Param('id') id: string,
+    @Body('userId') userId: string,
+  ) {
+    const user = req.user;
+
+    return this.addMemberToProjectUseCase.execute({
+      id,
+      userId,
+      userRole: user.role,
+      memberId: userId,
+    });
+  }
+
+  @Delete(':id/members')
+  async removeMemberFromProject(
+    @Request() req: AuthRequest,
+    @Param('id') id: string,
+    @Body('userId') userId: string,
+  ) {
+    const user = req.user;
+
+    return this.removeMemberFromProjectUseCase.execute({
+      id,
+      userId,
+      userRole: user.role,
+      memberId: userId,
+    });
+  }
+
+  @Get(':id/members')
+  async listProjectMembers(
+    @Request() req: AuthRequest,
+    @Param('id') id: string,
+  ) {
+    const userRole = req.user.role;
+
+    return this.listProjectMembersUseCase.execute(id, req.user.id, userRole);
+  }
+
+  @Get(':id/tasks')
+  async listProjectTasks(@Request() req: AuthRequest, @Param('id') id: string) {
+    const userRole = req.user.role;
+
+    return this.listProjectTasksUseCase.execute(id, req.user.id, userRole);
   }
 }
