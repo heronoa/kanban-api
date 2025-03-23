@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ListProjectDTO } from '@/domain/dto/project/list-project.dto';
 import { ProjectRepository } from '@/domain/repositories/project.repository';
 import { User } from '@/domain/entities/user.entity'; // Ensure User entity is imported
@@ -24,6 +24,10 @@ export class ListProjectsUseCase {
       });
 
     const totalPages = Math.ceil(totalCount / perPage);
+
+    if (!projects) {
+      throw new NotFoundException('Projects not found');
+    }
 
     return { projects, totalCount, page, perPage, totalPages };
   }

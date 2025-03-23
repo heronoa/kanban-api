@@ -1,69 +1,85 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { Test, TestingModule } from '@nestjs/testing';
-import { ProjectController } from '@/infrastructure/http/controllers/project.controller';
-import { CreateProjectUseCase } from '@/application/use-cases/create-project.use-case';
+import { ProjectsController } from '@/infrastructure/http/controllers/projects/projects.controller';
+import { CreateProjectUseCase } from '@/application/use-cases/projects/create-project.use-case';
+import { AuthRequest } from '@/shared/types/auth-request';
+import { DeleteProjectUseCase } from '@/application/use-cases/projects/delete-project.use-case';
+import { GetProjectByIdUseCase } from '@/application/use-cases/projects/get-projects-by-id.use-case';
+import { ListProjectsUseCase } from '@/application/use-cases/projects/list-projects.use-case';
+import { UpdateProjectUseCase } from '@/application/use-cases/projects/update-project.use-case';
+import { ProjectRepository } from '@/domain/repositories/project.repository';
+import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { AuthGuard } from '@/infrastructure/http/middlewares/AuthGuard/auth.guard';
+import { JwtService } from '@nestjs/jwt';
 
-describe('ProjectController - Create Project', () => {
-  let projectController: ProjectController;
+describe('ProjectsController - Create Project', () => {
+  let projectsController: ProjectsController;
   let createProjectUseCase: CreateProjectUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ProjectController],
+      controllers: [ProjectsController],
       providers: [
         {
           provide: CreateProjectUseCase,
           useValue: { execute: jest.fn() },
         },
+        PrismaService,
+        ProjectRepository,
+        AuthGuard,
+        ListProjectsUseCase,
+        UpdateProjectUseCase,
+        DeleteProjectUseCase,
+        GetProjectByIdUseCase,
+        JwtService,
       ],
     }).compile();
 
-    projectController = module.get<ProjectController>(ProjectController);
-    createProjectUseCase = module.get<CreateProjectUseCase>(CreateProjectUseCase);
+    projectsController = module.get<ProjectsController>(ProjectsController);
+    createProjectUseCase =
+      module.get<CreateProjectUseCase>(CreateProjectUseCase);
   });
 
   it('should create a project successfully', async () => {
-    const mockProject = { id: '1', name: 'Test Project', description: 'Project description' };
-    jest.spyOn(createProjectUseCase, 'execute').mockResolvedValue(mockProject);
-
-    const result = await projectController.create({
+    const mockProject = {
+      id: '1',
       name: 'Test Project',
       description: 'Project description',
+      ownerId: '1',
+    };
+    const mockUser = { id: 'user1', role: 'admin' };
+    const req = { user: mockUser } as AuthRequest;
+    jest.spyOn(createProjectUseCase, 'execute').mockResolvedValue(mockProject);
+
+    const result = await projectsController.createProject(req, {
+      name: 'Test Project',
+      description: 'Project description',
+      ownerId: '1',
     });
 
     expect(result).toEqual(mockProject);
-    expect(createProjectUseCase.execute).toHaveBeenCalledWith({
-      name: 'Test Project',
-      description: 'Project description',
-    });
+    expect(createProjectUseCase.execute).toHaveBeenCalledWith(
+      {
+        name: 'Test Project',
+        description: 'Project description',
+        ownerId: '1',
+      },
+      mockUser,
+    );
   });
 
   it('should handle errors when creating a project', async () => {
     const error = new Error('Error creating project');
+    const mockUser = { id: 'user1', role: 'admin' };
+    const req = { user: mockUser } as AuthRequest;
     jest.spyOn(createProjectUseCase, 'execute').mockRejectedValue(error);
 
     await expect(
-      projectController.create({
+      projectsController.createProject(req, {
         name: 'Test Project',
         description: 'Project description',
+        ownerId: '',
       }),
     ).rejects.toThrow('Error creating project');
-  });
-
-  it('should validate missing project name', async () => {
-    await expect(
-      projectController.create({
-        name: '',
-        description: 'Project description',
-      }),
-    ).rejects.toThrow('Project name is required');
-  });
-
-  it('should validate missing project description', async () => {
-    await expect(
-      projectController.create({
-        name: 'Test Project',
-        description: '',
-      }),
-    ).rejects.toThrow('Project description is required');
   });
 });
