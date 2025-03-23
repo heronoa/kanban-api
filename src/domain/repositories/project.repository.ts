@@ -24,7 +24,7 @@ export interface ProjectRepositoryType {
 export class ProjectRepository implements ProjectRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findById(id: string): Promise<ProjectDTO | null> {
+  async findById(id: string): Promise<Project | null> {
     return this.prisma.project.findUnique({
       where: { id },
     });

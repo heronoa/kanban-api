@@ -38,6 +38,7 @@ describe('ProjectRepository', () => {
     testProject = await projectRepository.create({
       name: 'Test Project',
       ownerId: testUser.id,
+      description: 'Test Description',
     });
 
     expect(testProject).toBeDefined();
