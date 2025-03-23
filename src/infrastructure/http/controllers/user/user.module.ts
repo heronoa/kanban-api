@@ -7,6 +7,8 @@ import { ListUserUseCase } from '@/application/use-cases/user/list-users.use-cas
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProfileUserUseCase } from '@/application/use-cases/user/get-profile.use-case';
+import { UpdateUserUseCase } from '@/application/use-cases/user/update-user.use-case';
+import { DeleteUserUseCase } from '@/application/use-cases/user/delete-user.use-case';
 
 @Module({
   imports: [
@@ -27,6 +29,8 @@ import { ProfileUserUseCase } from '@/application/use-cases/user/get-profile.use
     PrismaService,
     AuthGuard,
     ListUserUseCase,
+    UpdateUserUseCase,
+    DeleteUserUseCase,
     ProfileUserUseCase,
   ],
   controllers: [UserController],
