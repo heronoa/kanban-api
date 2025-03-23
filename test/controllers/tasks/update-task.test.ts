@@ -14,6 +14,7 @@ import { MoveTaskUseCase } from '@/application/use-cases/tasks/move-task.use-cas
 import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
 import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
 import { JwtService } from '@nestjs/jwt';
+import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
 
 describe('TaskController - Update User', () => {
   let tasksController: TasksController;
@@ -46,6 +47,7 @@ describe('TaskController - Update User', () => {
         TaskRepository,
         PrismaService,
         JwtService,
+        ListUsersOnTaskUseCase,
       ],
     }).compile();
 

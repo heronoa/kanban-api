@@ -12,6 +12,9 @@ import { GetTaskByIdUseCase } from '@/application/use-cases/tasks/get-tasks-by-i
 import { ListTasksUseCase } from '@/application/use-cases/tasks/list-tasks.use-case';
 import { MoveTaskUseCase } from '@/application/use-cases/tasks/move-task.use-case';
 import { JwtService } from '@nestjs/jwt';
+import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
+import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
+import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
 
 describe('TasksController - Delete Task', () => {
   let tasksController: TasksController;
@@ -34,6 +37,9 @@ describe('TasksController - Delete Task', () => {
         TaskRepository,
         PrismaService,
         JwtService,
+        AssignTaskUseCase,
+        UnassignTaskUseCase,
+        ListUsersOnTaskUseCase,
       ],
     }).compile();
 
