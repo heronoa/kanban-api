@@ -18,7 +18,7 @@ import { ProfileUserUseCase } from '@/application/use-cases/user/get-profile.use
 import { UpdateUserUseCase } from '@/application/use-cases/user/update-user.use-case';
 import { DeleteUserUseCase } from '@/application/use-cases/user/delete-user.use-case';
 import { User } from '@/domain/entities/user.entity';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListUserDTO } from '@/domain/dto/user/list-user.dto';
 
 @ApiTags('User Management')
@@ -49,6 +49,8 @@ export class UserController {
 
   @Get()
   @ApiOperation({ summary: 'List Users - List all users (Admin only)' })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({
     status: 200,
     description: 'List of users',

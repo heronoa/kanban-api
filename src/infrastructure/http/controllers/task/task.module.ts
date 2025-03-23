@@ -11,6 +11,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { AuthGuard } from '@/infrastructure/http/middlewares/AuthGuard/auth.guard';
 import { TaskRepository } from '@/domain/repositories/task.repository';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
+import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
+import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
+import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
 
 @Module({
   imports: [
@@ -28,6 +31,9 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
   ],
   controllers: [TasksController],
   providers: [
+    AssignTaskUseCase,
+    UnassignTaskUseCase,
+    ListUsersOnTaskUseCase,
     CreateTaskUseCase,
     DeleteTaskUseCase,
     UpdateTaskUseCase,

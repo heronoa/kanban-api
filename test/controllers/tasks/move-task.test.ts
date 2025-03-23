@@ -11,6 +11,9 @@ import { TaskRepository } from '@/domain/repositories/task.repository';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AuthGuard } from '@/infrastructure/http/middlewares/AuthGuard/auth.guard';
 import { JwtService } from '@nestjs/jwt';
+import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
+import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
+import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
 
 /* eslint-disable @typescript-eslint/unbound-method */
 
@@ -35,6 +38,9 @@ describe('TaskController - Move Task', () => {
         TaskRepository,
         PrismaService,
         JwtService,
+        AssignTaskUseCase,
+        UnassignTaskUseCase,
+        ListUsersOnTaskUseCase,
       ],
     }).compile();
 
