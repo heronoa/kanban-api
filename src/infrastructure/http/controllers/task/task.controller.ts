@@ -20,7 +20,7 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ListTaskDTO } from '@/domain/dto/task/list-task.dto';
 import { UserResponse } from '@/domain/dto/auth/auth-reponse.dto';
 import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
@@ -48,6 +48,10 @@ export class TasksController {
     summary:
       'List Tasks - List all tasks (Limitations: Admin may list all tasks, User can only list tasks from a project that he is part of)',
   })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'projectId', required: false, type: String })
+  @ApiQuery({ name: 'status', required: false, type: String })
   @ApiResponse({
     status: 200,
     description: 'List of tasks',
@@ -78,8 +82,8 @@ export class TasksController {
     @Request() req: AuthRequest,
     @Query('page') page = 1,
     @Query('limit') limit = 10,
-    @Query('projectId') projectId: string,
-    @Query('status') status: string,
+    @Query('projectId') projectId?: string,
+    @Query('status') status?: string,
   ) {
     const user = req.user;
 

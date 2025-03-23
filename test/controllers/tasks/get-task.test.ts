@@ -12,11 +12,13 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AuthGuard } from '@/infrastructure/http/middlewares/AuthGuard/auth.guard';
 import { MoveTaskUseCase } from '@/application/use-cases/tasks/move-task.use-case';
 import { JwtService } from '@nestjs/jwt';
+import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
 
 describe('TasksController - Get Tasks', () => {
   let tasksController: TasksController;
   let getTaskByIdUseCase: GetTaskByIdUseCase;
   let listTasksUseCase: ListTasksUseCase;
+  let listUsersOnTaskUseCase: ListUsersOnTaskUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -28,6 +30,10 @@ describe('TasksController - Get Tasks', () => {
         },
         {
           provide: ListTasksUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: ListUsersOnTaskUseCase,
           useValue: { execute: jest.fn() },
         },
         CreateTaskUseCase,
@@ -44,6 +50,9 @@ describe('TasksController - Get Tasks', () => {
     tasksController = module.get<TasksController>(TasksController);
     getTaskByIdUseCase = module.get<GetTaskByIdUseCase>(GetTaskByIdUseCase);
     listTasksUseCase = module.get<ListTasksUseCase>(ListTasksUseCase);
+    listUsersOnTaskUseCase = module.get<ListUsersOnTaskUseCase>(
+      ListUsersOnTaskUseCase,
+    );
   });
 
   describe('Get Task By ID', () => {
@@ -136,6 +145,56 @@ describe('TasksController - Get Tasks', () => {
         userRole: mockUser.role,
         page: 1,
         perPage: 10,
+      });
+    });
+  });
+
+  describe('List Task Users', () => {
+    it('should return a list of users assigned to a task', async () => {
+      const mockUsers = [
+        {
+          id: '1',
+          name: 'User 1',
+          email: 'user1@gmail.com',
+          role: 'USER' as const,
+          createdAt: new Date('2021-09-01T20:00:00.000Z'),
+        },
+      ];
+      const mockUser = { id: 'user1', role: 'admin' };
+      const req = { user: mockUser } as AuthRequest;
+      jest
+        .spyOn(listUsersOnTaskUseCase, 'execute')
+        .mockResolvedValue(mockUsers);
+
+      const result = await tasksController.listTaskUsers(req, '1');
+
+      expect(result).toEqual({
+        users: mockUsers,
+        totalCount: 1,
+        page: 1,
+        perPage: 10,
+        totalPages: 1,
+      });
+      expect(listUsersOnTaskUseCase.execute).toHaveBeenCalledWith({
+        taskId: '1',
+        userId: mockUser.id,
+        userRole: mockUser.role,
+      });
+    });
+
+    it('should handle errors when listing users on a task', async () => {
+      const error = new Error('Error fetching users');
+      const mockUser = { id: 'user1', role: 'admin' };
+      const req = { user: mockUser } as AuthRequest;
+      jest.spyOn(listUsersOnTaskUseCase, 'execute').mockRejectedValue(error);
+
+      await expect(tasksController.listTaskUsers(req, '1')).rejects.toThrow(
+        'Error fetching users',
+      );
+      expect(listUsersOnTaskUseCase.execute).toHaveBeenCalledWith({
+        taskId: '1',
+        userId: mockUser.id,
+        userRole: mockUser.role,
       });
     });
   });

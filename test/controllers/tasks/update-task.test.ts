@@ -11,11 +11,15 @@ import { TaskRepository } from '@/domain/repositories/task.repository';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AuthGuard } from '@/infrastructure/http/middlewares/AuthGuard/auth.guard';
 import { MoveTaskUseCase } from '@/application/use-cases/tasks/move-task.use-case';
+import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
+import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
 import { JwtService } from '@nestjs/jwt';
 
 describe('TaskController - Update User', () => {
   let tasksController: TasksController;
   let updateTaskUseCase: UpdateTaskUseCase;
+  let assignTaskUseCase: AssignTaskUseCase;
+  let unassignTaskUseCase: UnassignTaskUseCase;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -23,6 +27,14 @@ describe('TaskController - Update User', () => {
       providers: [
         {
           provide: UpdateTaskUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: AssignTaskUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
+          provide: UnassignTaskUseCase,
           useValue: { execute: jest.fn() },
         },
         CreateTaskUseCase,
@@ -39,6 +51,8 @@ describe('TaskController - Update User', () => {
 
     tasksController = module.get<TasksController>(TasksController);
     updateTaskUseCase = module.get<UpdateTaskUseCase>(UpdateTaskUseCase);
+    assignTaskUseCase = module.get<AssignTaskUseCase>(AssignTaskUseCase);
+    unassignTaskUseCase = module.get<UnassignTaskUseCase>(UnassignTaskUseCase);
   });
 
   describe('Update Task', () => {
@@ -67,6 +81,54 @@ describe('TaskController - Update User', () => {
           title: 'Updated Task',
         },
         user: req.user,
+      });
+    });
+  });
+
+  describe('Assign Task', () => {
+    it('should assign a task to a user', async () => {
+      const mockTask = {
+        id: '1',
+        title: 'Task 1',
+        description: 'Task description',
+        projectId: 'project1',
+      };
+      jest.spyOn(assignTaskUseCase, 'execute').mockResolvedValue(mockTask);
+
+      const req = { user: { id: 'admin1', role: 'ADMIN' } } as AuthRequest;
+      const result = await tasksController.assignTask(req, '1', {
+        userId: 'user1',
+      });
+
+      expect(result).toEqual(mockTask);
+      expect(assignTaskUseCase.execute).toHaveBeenCalledWith({
+        taskId: '1',
+        userId: 'user1',
+        userRole: 'ADMIN',
+      });
+    });
+  });
+
+  describe('Unassign Task', () => {
+    it('should unassign a task from a user', async () => {
+      const mockTask = {
+        id: '1',
+        title: 'Task 1',
+        description: 'Task description',
+        projectId: 'project1',
+      };
+      jest.spyOn(unassignTaskUseCase, 'execute').mockResolvedValue(mockTask);
+
+      const req = { user: { id: 'admin1', role: 'ADMIN' } } as AuthRequest;
+      const result = await tasksController.unassignTask(req, '1', {
+        userId: 'user1',
+      });
+
+      expect(result).toEqual(mockTask);
+      expect(unassignTaskUseCase.execute).toHaveBeenCalledWith({
+        taskId: '1',
+        userId: 'user1',
+        userRole: 'ADMIN',
       });
     });
   });

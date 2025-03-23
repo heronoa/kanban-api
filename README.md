@@ -53,6 +53,9 @@ Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar pro
 - **Atualizar Tarefa**: Permite a atualização das informações de uma tarefa.
 - **Mover Tarefa entre Projetos**: Permite mover uma tarefa de um projeto para outro.
 - **Remover Tarefa**: Exclui uma tarefa do sistema.
+- **Atribuir Tarefa a Usuário**: Atribui uma tarefa a um usuário específico.
+- **Desatribuir Tarefa de Usuário**: Remove a atribuição de uma tarefa de um usuário.
+- **Listar Usuários de uma Tarefa**: Retorna uma lista de usuários atribuídos a uma tarefa.
 
 ## Estrutura do Projeto
 

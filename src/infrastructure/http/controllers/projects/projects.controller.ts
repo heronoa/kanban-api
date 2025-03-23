@@ -22,7 +22,7 @@ import { AddMemberToProjectsUseCase } from '@/application/use-cases/projects/add
 import { RemoveMemberToProjectsUseCase } from '@/application/use-cases/projects/remove-member-project.use-case';
 import { ListProjectsMembersUseCase } from '@/application/use-cases/projects/list-projects-member.use-case';
 import { ListProjectsTasksUseCase } from '@/application/use-cases/projects/list-projects-tasks.use-case';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { User } from '@/domain/dto/user/user.dto';
 import { Task } from '@/domain/dto/task/task.dto';
 
@@ -47,6 +47,8 @@ export class ProjectsController {
     summary:
       'List Projects - List all projects (Limitations: Admin may list all projects, User can only list projects that he is part of)',
   })
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
   @ApiResponse({
     status: 200,
     description: 'List of projects',
