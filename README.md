@@ -59,7 +59,7 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; .\run_migrations.ps1
 
 7. Acesse `http://localhost:3000/api/v1/` para ver a rota de health check e verificar se está rodando
 
-8. Acesse `http://localhost:3000/api/v1/` para ver as possíveis rotas pela documentação do swagger
+8. Acesse `http://localhost:3000/api/v1/docs` para ver as possíveis rotas pela documentação do swagger
 
 ## Como rodar os testes
 
