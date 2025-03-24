@@ -10,6 +10,21 @@ jobs:
     name: Run Tests and SonarQube Analysis
     runs-on: ubuntu-latest
 
+    services:
+      postgres:
+        image: postgres:15  # Usa PostgreSQL 15 (ou outra versão desejada)
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd="pg_isready -U test_user"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -22,10 +37,13 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set up Database URL
+        run: echo "DATABASE_URL=postgresql://test_user:test_password@localhost:5434/test_db" >> $GITHUB_ENV
+
       - name: Run db migrations
         run: bash ./migrate.sh
 
-      - name: Run Integratin Tests
+      - name: Run Integration Tests
         run: npm run test:integration
 
       - name: Run Unit Tests
@@ -41,4 +59,4 @@ jobs:
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
-          SONAR_TOKEN: ${{ secrets. SONARCLOUD_TOKEN }}
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
