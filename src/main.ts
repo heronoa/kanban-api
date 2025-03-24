@@ -1,6 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { INestApplication, ValidationPipe } from '@nestjs/common';
+import {
+  BadRequestException,
+  INestApplication,
+  ValidationPipe,
+} from '@nestjs/common';
 import { AllExceptionsFilter } from './infrastructure/filters/all-exceptions.filter';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import helmet from 'helmet';
@@ -36,6 +40,25 @@ function useGlobalPipes(app: INestApplication) {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
+      exceptionFactory: (errors) => {
+        const formattedErrors = errors.map((error) => {
+          const messages = error.constraints
+            ? Object.values(error.constraints).join(', ')
+            : 'Unknown error';
+
+          return {
+            field: error.property,
+            message: messages,
+          };
+        });
+
+        return new BadRequestException({
+          statusCode: 400,
+          error: 'Bad Request',
+          message: 'Validation failed',
+          errors: formattedErrors,
+        });
+      },
     }),
   );
 }

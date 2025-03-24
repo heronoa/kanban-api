@@ -1,19 +1,48 @@
 import { ApiProperty } from '@nestjs/swagger';
+import {
+  IsOptional,
+  IsString,
+  IsEnum,
+  IsDateString,
+  IsNotEmpty,
+} from 'class-validator';
 
 export class Task {
-  @ApiProperty()
+  @IsOptional()
+  @ApiProperty({ description: 'Unique identifier of the task' })
   id?: string;
-  @ApiProperty()
+
+  @IsString()
+  @IsNotEmpty()
+  @ApiProperty({ description: 'Title of the task' })
   title: string;
-  @ApiProperty()
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ description: 'Description of the task', nullable: true })
   description: string | null;
-  @ApiProperty()
+
+  @IsOptional()
+  @IsEnum(['TO_DO', 'IN_PROGRESS', 'DONE'])
+  @ApiProperty({
+    description: 'Current status of the task',
+    enum: ['TO_DO', 'IN_PROGRESS', 'DONE'],
+    default: 'TO_DO',
+  })
   status?: 'TO_DO' | 'IN_PROGRESS' | 'DONE' = 'TO_DO';
-  @ApiProperty()
+
+  @IsString()
+  @ApiProperty({ description: 'The project associated with the task' })
   projectId: string;
-  @ApiProperty()
+
+  @IsOptional()
+  @IsString()
+  @ApiProperty({ description: 'The user assigned to the task', nullable: true })
   assignedTo?: string | null;
-  @ApiProperty()
+
+  @IsOptional()
+  @IsDateString()
+  @ApiProperty({ description: 'Creation date of the task', nullable: true })
   createdAt?: Date;
 
   constructor(partial: Partial<Task>) {

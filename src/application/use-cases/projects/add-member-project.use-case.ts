@@ -17,6 +17,17 @@ export class AddMemberToProjectsUseCase {
     userRole: string;
     memberId: string;
   }): Promise<Project> {
+    const isProjectOwner = await this.projectRepository.isUserProjectOwner(
+      id,
+      userId,
+    );
+    const isUserProjectMember =
+      await this.projectRepository.isUserProjectMember(id, userId);
+
+    if (await this.projectRepository.isUserProjectOwner(id, userId)) {
+      throw new ForbiddenException('User already is the project owner');
+    }
+
     if (
       userRole === 'USER' &&
       !(await this.projectRepository.isUserProjectOwner(id, userId))

@@ -9,6 +9,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { UserModule } from './infrastructure/http/controllers/user/user.module';
 import { ProjectsModule } from './infrastructure/http/controllers/projects/projects.module';
 import { TaskModule } from './infrastructure/http/controllers/task/task.module';
+import { PrismaService } from './infrastructure/database/prisma.service';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { TaskModule } from './infrastructure/http/controllers/task/task.module';
   ],
   controllers: [AppController],
   providers: [
+    PrismaService,
     AppService,
     {
       provide: APP_INTERCEPTOR,

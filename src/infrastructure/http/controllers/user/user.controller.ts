@@ -42,8 +42,6 @@ export class UserController {
     type: User,
   })
   async getProfile(@Request() req: AuthRequest) {
-    console.log('user', req.user);
-
     return this.profileUserUseCase.execute(req.user.id);
   }
 

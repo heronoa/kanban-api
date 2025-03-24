@@ -9,12 +9,16 @@ const consoleFormat = format.combine(
       timestamp,
       level,
       message,
+      errors,
     }: {
       timestamp: string;
       level: string;
       message: string;
+      errors?: any[];
     }) => {
-      return `${timestamp} [${level}]: ${message}`;
+      return `${timestamp} [${level}]: ${message} ${
+        errors ? JSON.stringify(errors, null, 2) : ''
+      }`;
     },
   ),
 );
@@ -26,12 +30,16 @@ const fileFormat = format.combine(
       timestamp,
       level,
       message,
+      errors,
     }: {
       timestamp: string;
       level: string;
       message: string;
+      errors?: any[];
     }) => {
-      return `${timestamp} [${level}]: ${message}`;
+      return `${timestamp} [${level}]: ${message} ${
+        errors ? JSON.stringify(errors, null, 2) : ''
+      }`;
     },
   ),
 );

@@ -14,10 +14,16 @@ export class AssignTaskUseCase {
     userId: string;
     userRole: string;
   }): Promise<Task> {
-    if (
-      userRole === 'USER' &&
-      !(await this.taskRepository.isUserTaskMember(taskId, userId))
-    ) {
+    const isTaskOwner = await this.taskRepository.isUserTaskOwner(
+      taskId,
+      userId,
+    );
+    const isUserTaskMember = await this.taskRepository.isUserTaskMember(
+      taskId,
+      userId,
+    );
+
+    if (userRole === 'USER' && !(isUserTaskMember && isTaskOwner)) {
       throw new ForbiddenException('Insufficient permission');
     }
 

@@ -4,9 +4,10 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Task } from '@prisma/client';
 import { Task as TaskDTO } from '../dto/task/task.dto';
 import { UserResponse } from '../dto/auth/auth-reponse.dto';
+import { User } from '../entities/user.entity';
 
 interface TaskRepositoryType {
-  create(data: TaskDTO): Promise<Task>;
+  create(data: TaskDTO, user: User): Promise<Task>;
   findById(id: string): Promise<Task | null>;
   findAllByProjectId(projectId: string): Promise<Task[]>;
   update(id: string, data: Partial<Task>): Promise<Task>;
@@ -40,9 +41,19 @@ interface TaskRepositoryType {
 export class TaskRepository implements TaskRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: TaskDTO): Promise<Task> {
+  async create(data: TaskDTO, user: User): Promise<Task> {
+    const taskData: TaskDTO & { users?: any } = {
+      ...data,
+    };
+
+    if (user.role === 'USER') {
+      taskData.users = {
+        connect: { id: user.id },
+      };
+    }
+
     return this.prisma.task.create({
-      data,
+      data: taskData,
     });
   }
 
@@ -138,13 +149,22 @@ export class TaskRepository implements TaskRepositoryType {
       skip: (page - 1) * perPage,
       take: perPage,
       where: {
-        project: {
-          users: {
-            some: {
-              id: userId,
+        OR: [
+          {
+            project: {
+              users: {
+                some: {
+                  id: userId,
+                },
+              },
             },
           },
-        },
+          {
+            project: {
+              ownerId: userId,
+            },
+          },
+        ],
       },
     });
 
@@ -235,6 +255,21 @@ export class TaskRepository implements TaskRepositoryType {
     });
 
     return !!task;
+  }
+
+  async isUserTaskProjectOwner(
+    projectId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const project = await this.prisma.project.findFirst({
+      where: {
+        id: projectId,
+        ownerId: userId,
+      },
+      select: { id: true },
+    });
+
+    return !!project;
   }
 
   async isUserTaskOwner(taskId: string, userId: string): Promise<boolean> {
