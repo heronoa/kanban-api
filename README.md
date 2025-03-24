@@ -1,6 +1,7 @@
 # Kanban API
 
 [![Deploy](https://img.shields.io/badge/Deploy-Production-green)](https://kanban-api-fbacf9bca2fc.herokuapp.com/api/v1/)
+[![Develop](https://img.shields.io/badge/Deploy-Develop-yellow)](https://kanban-api-dev-e550593d618f.herokuapp.com//api/v1/)
 [![Swagger](https://img.shields.io/badge/Swagger-API%20Docs-blue)](https://kanban-api-fbacf9bca2fc.herokuapp.com/api/v1/docs)
 
 ## Descrição
@@ -46,6 +47,10 @@ Para rodar o projeto, siga os passos abaixo:
    ```sh
    npm run start:prod
    ```
+
+7. Acesse `http://localhost:3000/api/v1/` para ver a rota de health check e verificar se está rodando
+
+8. Acesse `http://localhost:3000/api/v1/` para ver as possíveis rotas pela documentação do swagger
 
 ## Como rodar os testes
 
@@ -149,6 +154,177 @@ Para rodar os testes, siga os passos abaixo:
 2025-03-21T19:36:40.407Z [info]: GET /api/v1/ - 200
 2025-03-21T19:36:59.407Z [info]: POST /api/v1/auth/login - 201
 ```
+
+## Exemplos de Requisições
+
+## Exemplos de Requisições
+
+### HealthCheck
+
+#### Hello-World
+
+```http
+GET /api/v1/
+```
+
+```sh
+curl -X GET "http://localhost:3000/api/v1/"
+```
+
+### Autenticação
+
+#### Login
+
+```http
+POST /api/v1/auth/login
+Content-Type: application/json
+
+{
+    "email": "test3@gmail.com",
+    "password": "123456"
+}
+```
+
+```sh
+curl -X POST "http://localhost:3000/api/v1/auth/login" -H "Content-Type: application/json" -d '{
+    "email": "test3@gmail.com",
+    "password": "123456"
+}'
+```
+
+#### Registro
+
+```http
+POST /api/v1/auth/register
+Content-Type: application/json
+
+{
+    "email": "test3@gmail.com",
+    "password": "123456",
+    "name": "test3"
+}
+```
+
+```sh
+curl -X POST "http://localhost:3000/api/v1/auth/register" -H "Content-Type: application/json" -d '{
+    "email": "test3@gmail.com",
+    "password": "123456",
+    "name": "test3"
+}'
+```
+
+### Usuários
+
+#### Listar Usuários
+
+```http
+GET /api/v1/users
+Authorization: Bearer <token>
+```
+
+```sh
+curl -X GET "http://localhost:3000/api/v1/users" -H "Authorization: Bearer <token>"
+```
+
+#### Obter Perfil do Usuário
+
+```http
+GET /api/v1/users/profile
+Authorization: Bearer <token>
+```
+
+```sh
+curl -X GET "http://localhost:3000/api/v1/users/profile" -H "Authorization: Bearer <token>"
+```
+
+### Projetos
+
+#### Listar Projetos
+
+```http
+GET /api/v1/projects
+Authorization: Bearer <token>
+```
+
+```sh
+curl -X GET "http://localhost:3000/api/v1/projects" -H "Authorization: Bearer <token>"
+```
+
+#### Criar Projeto
+
+```http
+POST /api/v1/projects
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "name": "Projeto Teste"
+}
+```
+
+```sh
+curl -X POST "http://localhost:3000/api/v1/projects" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{
+    "name": "Projeto Teste"
+}'
+```
+
+#### Adicionar Membro ao Projeto
+
+```http
+POST /api/v1/projects/{projectId}/members
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "userId": "a9695178-55b3-476b-9073-442c0d3fe8e4"
+}
+```
+
+```sh
+curl -X POST "http://localhost:3000/api/v1/projects/{projectId}/members" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{
+    "userId": "a9695178-55b3-476b-9073-442c0d3fe8e4"
+}'
+```
+
+### Tarefas
+
+#### Criar Tarefa
+
+```http
+POST /api/v1/tasks
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+    "title": "Tarefa Teste",
+    "projectId": "9f7bda77-7ca7-4be8-b29c-c318b081f59b"
+}
+```
+
+```sh
+curl -X POST "http://localhost:3000/api/v1/tasks" -H "Authorization: Bearer <token>" -H "Content-Type: application/json" -d '{
+    "title": "Tarefa Teste",
+    "projectId": "9f7bda77-7ca7-4be8-b29c-c318b081f59b"
+}'
+```
+
+#### Listar Tarefas
+
+```http
+GET /api/v1/tasks
+Authorization: Bearer <token>
+```
+
+```sh
+curl -X GET "http://localhost:3000/api/v1/tasks" -H "Authorization: Bearer <token>"
+```
+
+### Veja mais no Swagger da aplicação
+
+Para mais detalhes sobre as rotas e como utilizá-las, consulte a documentação interativa gerada pelo Swagger:
+
+[Swagger API Docs](https://kanban-api-fbacf9bca2fc.herokuapp.com/api/v1/docs)
+ou na rota `/api/v1/docs` da aplicação rodando localmente
 
 ## Estrutura do Projeto
 
