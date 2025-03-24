@@ -15,12 +15,6 @@ export class ListProjectsTasksUseCase {
       userId,
     );
 
-    console.log({
-      isUserProjectMember,
-      isUserProjectOwner,
-      userRole,
-    });
-
     if (userRole === 'USER' && !(isUserProjectMember || isUserProjectOwner)) {
       throw new Error('Insufficient permission');
     }

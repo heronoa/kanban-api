@@ -193,7 +193,7 @@ export class ProjectsController {
 
     return this.removeMemberFromProjectUseCase.execute({
       id,
-      userId,
+      userId: user.id,
       userRole: user.role,
       memberId: userId,
     });

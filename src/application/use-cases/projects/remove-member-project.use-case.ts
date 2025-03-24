@@ -17,11 +17,20 @@ export class RemoveMemberToProjectsUseCase {
     userRole: string;
     memberId: string;
   }): Promise<Project> {
-    if (
-      userRole === 'USER' &&
-      !(await this.projectRepository.isUserProjectOwner(id, userId))
-    ) {
+    const isUserProjectOwner = await this.projectRepository.isUserProjectOwner(
+      id,
+      userId,
+    );
+
+    const isMemberProjectMember =
+      await this.projectRepository.isUserProjectMember(id, memberId);
+
+    if (userRole === 'USER' && !isUserProjectOwner) {
       throw new ForbiddenException('Insufficient permission');
+    }
+
+    if (!isMemberProjectMember) {
+      throw new ForbiddenException('User is not a member of the project');
     }
 
     const response = await this.projectRepository.removeMember(id, memberId);

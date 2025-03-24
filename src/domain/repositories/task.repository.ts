@@ -42,8 +42,6 @@ export class TaskRepository implements TaskRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
   async isUserTaskMember(taskId: string, userId: string): Promise<boolean> {
-    console.log('trigger isUserTaskMember');
-
     const task = await this.prisma.task.findFirst({
       where: {
         id: taskId,
@@ -56,20 +54,6 @@ export class TaskRepository implements TaskRepositoryType {
       select: { id: true },
     });
 
-    const allTasks = await this.prisma.task.findMany({
-      include: {
-        users: true,
-      },
-    });
-
-    console.log({
-      taskId,
-      userId,
-      task,
-      allTasks,
-      users: allTasks[0].users,
-    });
-
     return !!task;
   }
 
@@ -77,8 +61,6 @@ export class TaskRepository implements TaskRepositoryType {
     const taskData: TaskDTO & { users?: any; project?: any } = {
       ...data,
     };
-
-    console.log('data', data);
 
     if (user.role === 'USER') {
       taskData.users = {
@@ -88,8 +70,6 @@ export class TaskRepository implements TaskRepositoryType {
         connect: { id: data.projectId },
       };
     }
-
-    console.log('taskData', taskData);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { projectId, ...connectableData } = taskData;
@@ -146,8 +126,6 @@ export class TaskRepository implements TaskRepositoryType {
   }
 
   async listUserOnTask(taskId: string): Promise<UserResponse[]> {
-    console.log('trigger listUserOnTask');
-
     const task = await this.prisma.task.findUnique({
       where: {
         id: taskId,
@@ -164,10 +142,6 @@ export class TaskRepository implements TaskRepositoryType {
         },
       },
     });
-
-    const allTasks = await this.prisma.task.findMany();
-
-    console.log('allTasks', allTasks);
 
     return task?.users || [];
   }
@@ -264,6 +238,28 @@ export class TaskRepository implements TaskRepositoryType {
     return this.prisma.task.update({
       where: { id },
       data,
+    });
+  }
+
+  async moveTask(taskId: string, toProjectId: string): Promise<Task> {
+    return this.prisma.$transaction(async (prisma) => {
+      await prisma.task.update({
+        where: { id: taskId },
+        data: {
+          users: {
+            set: [],
+          },
+        },
+      });
+
+      return prisma.task.update({
+        where: { id: taskId },
+        data: {
+          project: {
+            connect: { id: toProjectId },
+          },
+        },
+      });
     });
   }
 

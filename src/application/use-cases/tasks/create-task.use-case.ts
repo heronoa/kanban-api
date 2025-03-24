@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { TaskRepository } from '@/domain/repositories/task.repository';
 import { Task } from '@/domain/dto/task/task.dto';
 import { User } from '@/domain/entities/user.entity';
@@ -26,7 +26,7 @@ export class CreateTaskUseCase {
       );
 
       if (!isMember && !isOwner) {
-        throw new Error('User is not assigned to this project');
+        throw new ForbiddenException('User is not assigned to this project');
       }
     }
 

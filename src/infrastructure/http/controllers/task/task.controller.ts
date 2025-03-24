@@ -357,9 +357,6 @@ export class TasksController {
   ) {
     const user = req.user;
 
-    console.log('user listusers', user);
-    console.log('taskId listusers', taskId);
-
     return this.listUsersOnTaskUseCase.execute({
       taskId,
       userId: user.id,

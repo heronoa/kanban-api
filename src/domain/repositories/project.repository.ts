@@ -145,13 +145,6 @@ export class ProjectRepository implements ProjectRepositoryType {
       include: { Task: true },
     });
 
-    const allProjects = await this.prisma.project.findMany({
-      include: { Task: true },
-    });
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    console.log({ project, allProjects, tasks: allProjects[0].Task || [] });
-
     return project?.Task || [];
   }
 
