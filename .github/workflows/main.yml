@@ -41,7 +41,7 @@ jobs:
         run: echo "DATABASE_URL=postgresql://test_user:test_password@localhost:5434/test_db" >> $GITHUB_ENV
 
       - name: Run db migrations
-        run: npx prisma migrate deploy
+        run: npx prisma migrate deploy --schema=src/infrastructure/database/prisma/schema.prisma
 
       - name: Run Integration Tests
         run: npm run test:integration
