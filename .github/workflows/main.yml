@@ -45,7 +45,6 @@ jobs:
         run: |
           npx prisma migrate deploy --schema=src/infrastructure/database/prisma/schema.prisma
           npx prisma generate --schema=src/infrastructure/database/prisma/schema.prisma
-        run: npx prisma migrate deploy --schema=src/infrastructure/database/prisma/schema.prisma
 
       - name: Run Integration Tests
         run: npm run test:integration
@@ -59,8 +58,3 @@ jobs:
             echo "Tests failed, skipping deploy."
             exit 1
           fi
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4
-        env:
-          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
