@@ -1,22 +1,95 @@
 # Kanban API
 
+[![Deploy](https://img.shields.io/badge/Deploy-Production-green)](https://kanban-api-fbacf9bca2fc.herokuapp.com/api/v1/)
+[![Swagger](https://img.shields.io/badge/Swagger-API%20Docs-blue)](https://kanban-api-fbacf9bca2fc.herokuapp.com/api/v1/docs)
+
 ## Descrição
 
 Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar projetos e tarefas em um sistema de quadro Kanban.
 
+## Como rodar o projeto
+
+Para rodar o projeto, siga os passos abaixo:
+
+1. Rode o Docker Compose para iniciar o banco de dados:
+
+   ```sh
+   docker-compose up -d
+   ```
+
+2. Execute o script `migrate-db.sh` para aplicar as migrações no banco de dados principal e no banco de dados de testes:
+
+   ```sh
+   ./scripts/migrate-db.sh
+   ```
+
+3. Instale as dependências do projeto:
+
+   ```sh
+   npm install
+   ```
+
+4. Gere os arquivos do Prisma e aplique as migrações do banco de dados:
+
+   ```sh
+   npm run build
+   ```
+
+5. Inicie a aplicação em modo de desenvolvimento:
+
+   ```sh
+   npm run start:dev
+   ```
+
+6. Para iniciar a aplicação em modo de produção:
+
+   ```sh
+   npm run start:prod
+   ```
+
+## Como rodar os testes
+
+Para rodar os testes, siga os passos abaixo:
+
+1. Execute o script `migrate-db.sh` para aplicar as migrações no banco de dados principal e no banco de dados de testes (Se você rodou no passo anterior não será necessário nesse passo):
+
+   ```sh
+   ./migrate-db.sh
+   ```
+
+2. Rode os testes automatizados:
+
+   ```sh
+   npm run test:unit
+   ```
+
+3. Para rodar os testes de integração:
+
+   ```sh
+   npm run test:integration
+   ```
+
+4. Para verificar a cobertura dos testes:
+
+   ```sh
+   npm run test:cov
+   ```
+
 ## Tecnologias Utilizadas
 
-- **Framework**: NestJS
-- **Banco de Dados**: PostgreSQL + Prisma
-- **Autenticação**: JWT
-- **Validação**: Class-validator
-- **Testes**: Jest
-- **Documentação**: Swagger
-- **Logger**: Winston
-- **Arquitetura**: Clean Architecture
-- **Controle de Acesso**: RBAC (Role-Based Access Control)
-- **Containerização**: Docker
-- **CI/CD**: GitHub Actions
+- **NestJS**: Framework modular e escalável para aplicações backend, baseado em TypeScript, que facilita a criação de APIs e a implementação de arquitetura limpa.
+- **PostgreSQL + Prisma**: PostgreSQL é um banco de dados relacional robusto e confiável. Prisma oferece uma ORM moderna e eficiente, simplificando as interações com o banco de dados e melhorando a produtividade no desenvolvimento.
+- **JWT (JSON Web Token)**: Utilizado para autenticação e autorização de usuários, permitindo comunicação segura entre frontend e backend através de tokens.
+- **Class-validator**: Biblioteca para validação de dados no backend, garantindo a integridade e consistência dos dados antes de serem processados.
+- **Jest**: Framework de testes que facilita a criação e execução de testes unitários e de integração, garantindo a qualidade do código.
+- **Swagger**: Ferramenta para gerar documentação interativa da API, facilitando a compreensão e o uso da API por outros desenvolvedores.
+- **Winston**: Logger flexível e poderoso, permitindo o registro eficiente de logs e a integração com ferramentas de monitoramento como Papertrail.
+- **Clean Architecture**: Padrão de arquitetura que separa as preocupações do sistema, facilitando a manutenção, escalabilidade e testabilidade.
+- **RBAC (Role-Based Access Control)**: Mecanismo de controle de acesso baseado em funções, garantindo que usuários tenham apenas as permissões necessárias para suas atividades.
+- **Docker**: Ferramenta para containerizar a aplicação, garantindo consistência nos ambientes de desenvolvimento, testes e produção.
+- **GitHub Actions**: Serviço de CI/CD para automatizar o processo de integração contínua e entrega contínua, garantindo que os testes sejam executados e a qualidade do código seja mantida.
+- **Sonar**: Ferramenta de análise estática de código, integrada ao GitHub Actions, para escanear e identificar problemas de segurança, bugs e vulnerabilidades no código.
+- **Papertrail**: Serviço de logging que facilita o monitoramento de logs em tempo real, integrando-se ao Heroku e permitindo visualização e análise de erros e sucessos, além de ser compatível com Grafana para dashboards de performance.
 
 ## Funcionalidades
 
@@ -57,6 +130,26 @@ Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar pro
 - **Desatribuir Tarefa de Usuário**: Remove a atribuição de uma tarefa de um usuário.
 - **Listar Usuários de uma Tarefa**: Retorna uma lista de usuários atribuídos a uma tarefa.
 
+### Depuração
+
+- Utilizado o winston para organização de logs por data, hora e tipo (success e error)
+  exemplo de log:
+  ´./logs/2025-03-21-error.log
+
+```log
+./logs/2025-03-21-error.log
+
+2025-03-21T19:36:52.639Z [error]: POST /auth/login - Cannot POST /auth/login
+2025-03-21T19:37:01.338Z [error]: POST /api/v1/auth/login - ThrottlerException: Too Many Requests
+```
+
+```log
+./logs/2025-03-21-success.log
+
+2025-03-21T19:36:40.407Z [info]: GET /api/v1/ - 200
+2025-03-21T19:36:59.407Z [info]: POST /api/v1/auth/login - 201
+```
+
 ## Estrutura do Projeto
 
 ```
@@ -70,7 +163,6 @@ kanban-api/
 │   ├── infrastructure/
 │   │   ├── database/
 │   │   │   ├── migrations/
-│   │   │   ├── seeders/
 │   │   ├── http/
 │   │   │   ├── controllers/
 │   │   │   ├── middlewares/
@@ -81,7 +173,7 @@ kanban-api/
 │   │   ├── db/
 │   │   ├── repositories/
 │   │   ├── controllers/
-│── docs/
+│── logs/
 │── .env
 │── .gitignore
 │── package.json
@@ -134,10 +226,10 @@ Para rodar a aplicação:
 npm run start
 ```
 
-Para rodar os testes automatizados:
+Para rodar os testes de unidade:
 
 ```sh
-npm run test
+npm run test:unit
 ```
 
 Para rodar os testes de integração:
