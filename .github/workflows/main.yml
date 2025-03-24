@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test-and-analyze:
+    name: Run Tests and SonarQube Analysis
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+        ports:
+          - 5434:5432
+        options: >-
+          --health-cmd="pg_isready -U test_user"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Set up Database URL
+        run: echo "DATABASE_URL=postgresql://test_user:test_password@localhost:5434/test_db" >> $GITHUB_ENV
+
+      - name: Run db migrations
+        run: npx prisma migrate deploy --schema=src/infrastructure/database/prisma/schema.prisma
+
+      - name: Run Integration Tests
+        run: npm run test:integration
+
+      - name: Run Unit Tests
+        run: npm run test:unit
+
+      - name: Verify Tests Passed
+        run: |
+          if [ ${{ job.status }} != "success" ]; then
+            echo "Tests failed, skipping deploy."
+            exit 1
+          fi
+
+      - name: SonarQube Scan
+        uses: SonarSource/sonarqube-scan-action@v4
+        env:
+          SONAR_TOKEN: ${{ secrets.SONARCLOUD_TOKEN }}
