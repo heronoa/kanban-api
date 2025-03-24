@@ -22,6 +22,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Run db migrations
+        run: bash ./migrate.sh
+
       - name: Run Integratin Tests
         run: npm run test:integration
 
