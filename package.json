@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build": "nest build",
+    "build": " npx prisma generate --schema=src/infrastructure/database/prisma/schema.prisma && npx prisma db push --schema=src/infrastructure/database/prisma/schema.prisma&& rimraf dist && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch --skip-tests",
