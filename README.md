@@ -20,9 +20,18 @@ Para rodar o projeto, siga os passos abaixo:
 
 2. Execute o script `migrate-db.sh` para aplicar as migrações no banco de dados principal e no banco de dados de testes:
 
-   ```sh
-   ./scripts/migrate-db.sh
-   ```
+linux:
+
+```sh
+./scripts/migrate-db.sh
+```
+
+windows:
+
+```sh
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; .\run_migrations.ps1
+
+```
 
 3. Instale as dependências do projeto:
 
