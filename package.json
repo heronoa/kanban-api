@@ -11,7 +11,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch --skip-tests",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "node dist/src/main",
     "prisma:migrate": "prisma migrate dev --schema=src/infrastructure/database/prisma/schema.prisma",
     "prisma:generate": "prisma generate --schema=src/infrastructure/database/prisma/schema.prisma",
     "prisma:studio": "prisma studio --schema=src/infrastructure/database/prisma/schema.prisma",
