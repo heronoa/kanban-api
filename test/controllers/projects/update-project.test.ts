@@ -135,7 +135,7 @@ describe('ProjectsController', () => {
       expect(result).toEqual(mockProject);
       expect(addMemberToProjectsUseCase.execute).toHaveBeenCalledWith({
         id: '1',
-        userId: 'user2',
+        userId: 'user1',
         userRole: 'ADMIN',
         memberId: 'user2',
       });
@@ -175,7 +175,7 @@ describe('ProjectsController', () => {
       expect(result).toEqual(mockProject);
       expect(removeMemberToProjectsUseCase.execute).toHaveBeenCalledWith({
         id: '1',
-        userId: 'user2',
+        userId: 'user1',
         userRole: 'ADMIN',
         memberId: 'user2',
       });

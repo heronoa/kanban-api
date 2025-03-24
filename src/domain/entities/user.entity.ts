@@ -27,8 +27,4 @@ export class User {
   constructor(partial: Partial<User>) {
     Object.assign(this, partial);
   }
-
-  validateEmail(): boolean {
-    return /\S+@\S+\.\S+/.test(this.email);
-  }
 }

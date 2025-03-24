@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+const dbUrl = process.env.DATABASE_URL;
 
 describe('Database Connection', () => {
   afterAll(async () => {
@@ -10,6 +11,7 @@ describe('Database Connection', () => {
   it('should connect to the database successfully', async () => {
     try {
       await prisma.$connect();
+      console.log('Connected to the database successfully:', dbUrl);
       expect(true).toBe(true);
     } catch (error) {
       console.error('Database connection failed:', error);
