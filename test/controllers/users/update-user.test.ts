@@ -56,9 +56,6 @@ describe('UserController - Update User', () => {
       createdAt: new Date(),
       projects: [],
       tasks: [],
-      validateEmail: function (): boolean {
-        throw new Error('Function not implemented.');
-      },
     };
     const req: AuthRequest = {
       user: { id: '1', email: 'user@email.com' },
