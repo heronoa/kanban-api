@@ -81,6 +81,7 @@ describe('ProjectsController', () => {
         name: 'New Project',
         ownerId: '1',
         description: 'New Project Description',
+        createdAt: new Date('2021-09-01T00:00:00.000Z'),
       };
       const createProjectDto = {
         name: 'New Project',

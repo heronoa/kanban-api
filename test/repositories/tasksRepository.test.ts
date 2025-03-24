@@ -46,11 +46,22 @@ describe('Task Repository - CRUD', () => {
   });
 
   it('should create a task', async () => {
-    testTask = await taskRepository.create({
-      title: 'Test Task',
-      description: 'This is a test task',
-      projectId: testProjectId,
+    const testUser = await prisma.user.findUnique({
+      where: { id: testUserId },
     });
+
+    if (!testUser) {
+      throw new Error('User not found');
+    }
+
+    testTask = await taskRepository.create(
+      {
+        title: 'Test Task',
+        description: 'This is a test task',
+        projectId: testProjectId,
+      },
+      { ...testUser, projects: [], tasks: [] },
+    );
 
     expect(testTask).toBeDefined();
     expect(testTask.id).toBeDefined();

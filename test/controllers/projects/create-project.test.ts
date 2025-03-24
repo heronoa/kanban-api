@@ -54,6 +54,7 @@ describe('ProjectsController - Create Project', () => {
       name: 'Test Project',
       description: 'Project description',
       ownerId: '1',
+      createdAt: new Date(),
     };
     const mockUser = { id: 'user1', role: 'admin' };
     const req = { user: mockUser } as AuthRequest;
