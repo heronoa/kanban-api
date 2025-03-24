@@ -142,10 +142,17 @@ export class ProjectRepository implements ProjectRepositoryType {
   async listTasks(id: string): Promise<Task[]> {
     const project = await this.prisma.project.findUnique({
       where: { id },
-      include: { tasks: true },
+      include: { Task: true },
     });
 
-    return project?.tasks || [];
+    const allProjects = await this.prisma.project.findMany({
+      include: { Task: true },
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    console.log({ project, allProjects, tasks: allProjects[0].Task || [] });
+
+    return project?.Task || [];
   }
 
   async isUserProjectMember(id: string, userId: string): Promise<boolean> {

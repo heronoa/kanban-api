@@ -7,10 +7,21 @@ export class ListProjectsTasksUseCase {
   constructor(private readonly projectRepository: ProjectRepository) {}
 
   async execute(id: string, userId: string, userRole: string): Promise<Task[]> {
-    if (
-      userRole === 'USER' &&
-      !(await this.projectRepository.isUserProjectMember(id, userId))
-    ) {
+    const isUserProjectMember =
+      await this.projectRepository.isUserProjectMember(id, userId);
+
+    const isUserProjectOwner = await this.projectRepository.isUserProjectOwner(
+      id,
+      userId,
+    );
+
+    console.log({
+      isUserProjectMember,
+      isUserProjectOwner,
+      userRole,
+    });
+
+    if (userRole === 'USER' && !(isUserProjectMember || isUserProjectOwner)) {
       throw new Error('Insufficient permission');
     }
 

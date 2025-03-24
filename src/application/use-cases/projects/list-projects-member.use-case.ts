@@ -11,10 +11,18 @@ export class ListProjectsMembersUseCase {
     userId: string,
     userRole: string,
   ): Promise<UserResponse[]> {
-    if (
-      userRole === 'USER' &&
-      !(await this.projectRepository.isUserProjectMember(id, userId))
-    ) {
+    const isUserProjectMember =
+      await this.projectRepository.isUserProjectMember(id, userId);
+
+    const isUserProjectOwner = await this.projectRepository.isUserProjectOwner(
+      id,
+      userId,
+    );
+
+    console.log('isUserProjectMember', isUserProjectMember);
+    console.log('isUserProjectOwner', isUserProjectOwner);
+
+    if (userRole === 'USER' && !(isUserProjectMember || isUserProjectOwner)) {
       throw new Error('Insufficient permission');
     }
 

@@ -167,7 +167,7 @@ export class ProjectsController {
 
     return this.addMemberToProjectUseCase.execute({
       id,
-      userId,
+      userId: user.id,
       userRole: user.role,
       memberId: userId,
     });

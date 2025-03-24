@@ -41,19 +41,66 @@ interface TaskRepositoryType {
 export class TaskRepository implements TaskRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
+  async isUserTaskMember(taskId: string, userId: string): Promise<boolean> {
+    console.log('trigger isUserTaskMember');
+
+    const task = await this.prisma.task.findFirst({
+      where: {
+        id: taskId,
+        users: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      select: { id: true },
+    });
+
+    const allTasks = await this.prisma.task.findMany({
+      include: {
+        users: true,
+      },
+    });
+
+    console.log({
+      taskId,
+      userId,
+      task,
+      allTasks,
+      users: allTasks[0].users,
+    });
+
+    return !!task;
+  }
+
   async create(data: TaskDTO, user: User): Promise<Task> {
-    const taskData: TaskDTO & { users?: any } = {
+    const taskData: TaskDTO & { users?: any; project?: any } = {
       ...data,
     };
+
+    console.log('data', data);
 
     if (user.role === 'USER') {
       taskData.users = {
         connect: { id: user.id },
       };
+      taskData.project = {
+        connect: { id: data.projectId },
+      };
     }
 
+    console.log('taskData', taskData);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { projectId, ...connectableData } = taskData;
+
     return this.prisma.task.create({
-      data: taskData,
+      data: {
+        ...connectableData,
+        assignedTo: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        project: taskData.project ? taskData.project : undefined,
+      },
     });
   }
 
@@ -99,6 +146,8 @@ export class TaskRepository implements TaskRepositoryType {
   }
 
   async listUserOnTask(taskId: string): Promise<UserResponse[]> {
+    console.log('trigger listUserOnTask');
+
     const task = await this.prisma.task.findUnique({
       where: {
         id: taskId,
@@ -115,6 +164,10 @@ export class TaskRepository implements TaskRepositoryType {
         },
       },
     });
+
+    const allTasks = await this.prisma.task.findMany();
+
+    console.log('allTasks', allTasks);
 
     return task?.users || [];
   }
@@ -220,22 +273,6 @@ export class TaskRepository implements TaskRepositoryType {
     });
   }
 
-  async isUserTaskMember(taskId: string, userId: string): Promise<boolean> {
-    const task = await this.prisma.task.findFirst({
-      where: {
-        id: taskId,
-        users: {
-          some: {
-            id: userId,
-          },
-        },
-      },
-      select: { id: true },
-    });
-
-    return !!task;
-  }
-
   async isUserTaskProjectMember(
     taskId: string,
     userId: string,
@@ -258,13 +295,15 @@ export class TaskRepository implements TaskRepositoryType {
   }
 
   async isUserTaskProjectOwner(
-    projectId: string,
+    taskId: string,
     userId: string,
   ): Promise<boolean> {
-    const project = await this.prisma.project.findFirst({
+    const project = await this.prisma.task.findFirst({
       where: {
-        id: projectId,
-        ownerId: userId,
+        id: taskId,
+        project: {
+          ownerId: userId,
+        },
       },
       select: { id: true },
     });
