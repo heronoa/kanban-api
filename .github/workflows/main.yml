@@ -45,6 +45,7 @@ jobs:
         run: |
           npx prisma migrate deploy --schema=src/infrastructure/database/prisma/schema.prisma
           npx prisma generate --schema=src/infrastructure/database/prisma/schema.prisma
+        run: npx prisma migrate deploy --schema=src/infrastructure/database/prisma/schema.prisma
 
       - name: Run Integration Tests
         run: npm run test:integration
