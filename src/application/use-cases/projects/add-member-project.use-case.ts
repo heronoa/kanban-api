@@ -17,10 +17,26 @@ export class AddMemberToProjectsUseCase {
     userRole: string;
     memberId: string;
   }): Promise<Project> {
-    if (
-      userRole === 'USER' &&
-      !(await this.projectRepository.isUserProjectOwner(id, userId))
-    ) {
+    const isUserProjectOwner = await this.projectRepository.isUserProjectOwner(
+      id,
+      userId,
+    );
+
+    const isMemberProjectMember =
+      await this.projectRepository.isUserProjectMember(id, memberId);
+
+    const isMemberProjectOwner =
+      await this.projectRepository.isUserProjectOwner(id, memberId);
+
+    if (isMemberProjectOwner) {
+      throw new ForbiddenException('User already is the project owner');
+    }
+
+    if (isMemberProjectMember) {
+      throw new ForbiddenException('User already is a project member');
+    }
+
+    if (userRole === 'USER' && !isUserProjectOwner) {
       throw new ForbiddenException('Insufficient permission');
     }
 

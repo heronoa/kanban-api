@@ -1,7 +1,8 @@
 import { TaskRepository } from '@/domain/repositories/task.repository';
 import { Task } from '@/domain/entities/task.entity';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class AssignTaskUseCase {
   constructor(private taskRepository: TaskRepository) {}
 
@@ -14,10 +15,16 @@ export class AssignTaskUseCase {
     userId: string;
     userRole: string;
   }): Promise<Task> {
-    if (
-      userRole === 'USER' &&
-      !(await this.taskRepository.isUserTaskMember(taskId, userId))
-    ) {
+    const isTaskOwner = await this.taskRepository.isUserTaskProjectOwner(
+      taskId,
+      userId,
+    );
+    const isUserTaskMember = await this.taskRepository.isUserTaskMember(
+      taskId,
+      userId,
+    );
+
+    if (userRole === 'USER' && !(isUserTaskMember || isTaskOwner)) {
       throw new ForbiddenException('Insufficient permission');
     }
 

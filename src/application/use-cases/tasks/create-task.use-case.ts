@@ -1,19 +1,32 @@
-import { Injectable } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 import { TaskRepository } from '@/domain/repositories/task.repository';
 import { Task } from '@/domain/dto/task/task.dto';
 import { User } from '@/domain/entities/user.entity';
+import { ProjectRepository } from '@/domain/repositories/project.repository';
 
 @Injectable()
 export class CreateTaskUseCase {
-  constructor(private readonly taskRepository: TaskRepository) {}
+  constructor(
+    private readonly taskRepository: TaskRepository,
+    private readonly projectRepository: ProjectRepository,
+  ) {}
 
-  private validateUserAssignmentToProject(
+  private async validateUserAssignmentToProject(
     user: User,
     projectId: string,
-  ): boolean {
+  ): Promise<boolean> {
     if (user.role === 'USER') {
-      if (!user.projects.map((project) => project.id).includes(projectId)) {
-        throw new Error('User is not assigned to this project');
+      const isMember = await this.projectRepository.isUserProjectMember(
+        projectId,
+        user.id,
+      );
+      const isOwner = await this.projectRepository.isUserProjectOwner(
+        projectId,
+        user.id,
+      );
+
+      if (!isMember && !isOwner) {
+        throw new ForbiddenException('User is not assigned to this project');
       }
     }
 
@@ -21,7 +34,8 @@ export class CreateTaskUseCase {
   }
 
   async execute(taskData: Task, user: User): Promise<Task> {
-    this.validateUserAssignmentToProject(user, taskData.projectId);
-    return this.taskRepository.create(taskData);
+    await this.validateUserAssignmentToProject(user, taskData.projectId);
+
+    return this.taskRepository.create(taskData, user);
   }
 }

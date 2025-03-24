@@ -27,7 +27,7 @@ export class DeleteTaskUseCase {
 
     if (
       user.role === 'USER' &&
-      !(await this.taskRepository.isUserTaskOwner(id, user.id))
+      !(await this.taskRepository.isUserTaskMember(id, user.id))
     ) {
       throw new ForbiddenException('Insufficient permission');
     }

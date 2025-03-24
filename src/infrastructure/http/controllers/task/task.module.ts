@@ -14,6 +14,7 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
 import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
 import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
+import { ProjectRepository } from '@/domain/repositories/project.repository';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users
     AuthGuard,
     TaskRepository,
     PrismaService,
+    ProjectRepository,
   ],
 })
 export class TaskModule {}

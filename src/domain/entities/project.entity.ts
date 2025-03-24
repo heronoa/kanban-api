@@ -3,6 +3,7 @@ export class Project {
   ownerId: string;
   createdAt?: Date;
   id?: string;
+  description?: string;
 
   constructor(partial: Partial<Project>) {
     Object.assign(this, partial);

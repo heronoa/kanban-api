@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Project } from '@prisma/client';
 import { Project as ProjectDTO } from '@/domain/dto/project/project.dto';
+import { Project as ProjectEntity } from '../entities/project.entity';
 import { Task } from '../dto/task/task.dto';
 import { UserResponse } from '../dto/auth/auth-reponse.dto';
 
@@ -13,7 +14,7 @@ export interface ProjectRepositoryType {
     page: number;
     perPage: number;
   }): Promise<{ projects: Project[]; totalCount: number }>;
-  create(user: ProjectDTO): Promise<Project>;
+  create(user: ProjectEntity): Promise<Project>;
   findByIdAndOrUserId(id: string, userId: string): Promise<Project | null>;
   findAll(): Promise<Project[]>;
   findById(id: string): Promise<ProjectDTO | null>;
@@ -56,7 +57,7 @@ export class ProjectRepository implements ProjectRepositoryType {
     return { projects, totalCount };
   }
 
-  async create(data: ProjectDTO): Promise<Project> {
+  async create(data: ProjectEntity): Promise<Project> {
     return this.prisma.project.create({
       data,
     });
@@ -141,10 +142,10 @@ export class ProjectRepository implements ProjectRepositoryType {
   async listTasks(id: string): Promise<Task[]> {
     const project = await this.prisma.project.findUnique({
       where: { id },
-      include: { tasks: true },
+      include: { Task: true },
     });
 
-    return project?.tasks || [];
+    return project?.Task || [];
   }
 
   async isUserProjectMember(id: string, userId: string): Promise<boolean> {

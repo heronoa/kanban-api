@@ -4,9 +4,10 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { Task } from '@prisma/client';
 import { Task as TaskDTO } from '../dto/task/task.dto';
 import { UserResponse } from '../dto/auth/auth-reponse.dto';
+import { User } from '../entities/user.entity';
 
 interface TaskRepositoryType {
-  create(data: TaskDTO): Promise<Task>;
+  create(data: TaskDTO, user: User): Promise<Task>;
   findById(id: string): Promise<Task | null>;
   findAllByProjectId(projectId: string): Promise<Task[]>;
   update(id: string, data: Partial<Task>): Promise<Task>;
@@ -40,9 +41,46 @@ interface TaskRepositoryType {
 export class TaskRepository implements TaskRepositoryType {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(data: TaskDTO): Promise<Task> {
+  async isUserTaskMember(taskId: string, userId: string): Promise<boolean> {
+    const task = await this.prisma.task.findFirst({
+      where: {
+        id: taskId,
+        users: {
+          some: {
+            id: userId,
+          },
+        },
+      },
+      select: { id: true },
+    });
+
+    return !!task;
+  }
+
+  async create(data: TaskDTO, user: User): Promise<Task> {
+    const taskData: TaskDTO & { users?: any; project?: any } = {
+      ...data,
+    };
+
+    if (user.role === 'USER') {
+      taskData.users = {
+        connect: { id: user.id },
+      };
+      taskData.project = {
+        connect: { id: data.projectId },
+      };
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { projectId, ...connectableData } = taskData;
+
     return this.prisma.task.create({
-      data,
+      data: {
+        ...connectableData,
+        assignedTo: undefined,
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        project: taskData.project ? taskData.project : undefined,
+      },
     });
   }
 
@@ -138,13 +176,22 @@ export class TaskRepository implements TaskRepositoryType {
       skip: (page - 1) * perPage,
       take: perPage,
       where: {
-        project: {
-          users: {
-            some: {
-              id: userId,
+        OR: [
+          {
+            project: {
+              users: {
+                some: {
+                  id: userId,
+                },
+              },
             },
           },
-        },
+          {
+            project: {
+              ownerId: userId,
+            },
+          },
+        ],
       },
     });
 
@@ -194,26 +241,32 @@ export class TaskRepository implements TaskRepositoryType {
     });
   }
 
+  async moveTask(taskId: string, toProjectId: string): Promise<Task> {
+    return this.prisma.$transaction(async (prisma) => {
+      await prisma.task.update({
+        where: { id: taskId },
+        data: {
+          users: {
+            set: [],
+          },
+        },
+      });
+
+      return prisma.task.update({
+        where: { id: taskId },
+        data: {
+          project: {
+            connect: { id: toProjectId },
+          },
+        },
+      });
+    });
+  }
+
   async delete(id: string): Promise<Task> {
     return this.prisma.task.delete({
       where: { id },
     });
-  }
-
-  async isUserTaskMember(taskId: string, userId: string): Promise<boolean> {
-    const task = await this.prisma.task.findFirst({
-      where: {
-        id: taskId,
-        users: {
-          some: {
-            id: userId,
-          },
-        },
-      },
-      select: { id: true },
-    });
-
-    return !!task;
   }
 
   async isUserTaskProjectMember(
@@ -235,6 +288,23 @@ export class TaskRepository implements TaskRepositoryType {
     });
 
     return !!task;
+  }
+
+  async isUserTaskProjectOwner(
+    taskId: string,
+    userId: string,
+  ): Promise<boolean> {
+    const project = await this.prisma.task.findFirst({
+      where: {
+        id: taskId,
+        project: {
+          ownerId: userId,
+        },
+      },
+      select: { id: true },
+    });
+
+    return !!project;
   }
 
   async isUserTaskOwner(taskId: string, userId: string): Promise<boolean> {

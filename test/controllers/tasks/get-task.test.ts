@@ -15,6 +15,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
 import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
 import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
+import { ProjectRepository } from '@/domain/repositories/project.repository';
 
 describe('TasksController - Get Tasks', () => {
   let tasksController: TasksController;
@@ -48,6 +49,7 @@ describe('TasksController - Get Tasks', () => {
         JwtService,
         AssignTaskUseCase,
         UnassignTaskUseCase,
+        ProjectRepository,
       ],
     }).compile();
 

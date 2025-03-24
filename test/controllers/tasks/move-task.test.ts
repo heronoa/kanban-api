@@ -14,6 +14,7 @@ import { JwtService } from '@nestjs/jwt';
 import { AssignTaskUseCase } from '@/application/use-cases/tasks/assign-task.use-case';
 import { ListUsersOnTaskUseCase } from '@/application/use-cases/tasks/list-users-task.use-case';
 import { UnassignTaskUseCase } from '@/application/use-cases/tasks/unassign-task.use-case';
+import { ProjectRepository } from '@/domain/repositories/project.repository';
 
 /* eslint-disable @typescript-eslint/unbound-method */
 
@@ -41,6 +42,7 @@ describe('TaskController - Move Task', () => {
         AssignTaskUseCase,
         UnassignTaskUseCase,
         ListUsersOnTaskUseCase,
+        ProjectRepository,
       ],
     }).compile();
 

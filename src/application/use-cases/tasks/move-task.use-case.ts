@@ -2,7 +2,9 @@ import { TaskRepository } from '@/domain/repositories/task.repository';
 import { ProjectRepository } from '@/domain/repositories/project.repository';
 import { Task } from '@/domain/entities/task.entity';
 import { Project } from '@/domain/dto/project/project.dto';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class MoveTaskUseCase {
   constructor(
     private taskRepository: TaskRepository,
@@ -40,20 +42,19 @@ export class MoveTaskUseCase {
     }
 
     const isUserAdmin = userRole === 'ADMIN';
-    const isUserMemberOfFromProject =
-      await this.taskRepository.isUserTaskProjectMember(fromProjectId, userId);
-    const isUserMemberOfToProject =
-      await this.taskRepository.isUserTaskProjectMember(fromProjectId, userId);
+    const isUserOwnerOfFromProject =
+      fromProject.ownerId === userId || isUserAdmin;
+    const isUserOwnerOfToProject = toProject.ownerId === userId || isUserAdmin;
 
     if (
       !isUserAdmin &&
-      (!isUserMemberOfFromProject || !isUserMemberOfToProject)
+      (!isUserOwnerOfFromProject || !isUserOwnerOfToProject)
     ) {
       throw new Error('User does not have permission to move the task');
     }
 
     task.projectId = toProjectId;
-    await this.taskRepository.update(task.id, task);
+    await this.taskRepository.moveTask(task.id, toProjectId);
 
     return task;
   }

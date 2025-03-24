@@ -1,7 +1,8 @@
 import { TaskRepository } from '@/domain/repositories/task.repository';
 import { Task } from '@/domain/entities/task.entity';
-import { ForbiddenException } from '@nestjs/common';
+import { ForbiddenException, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UnassignTaskUseCase {
   constructor(private taskRepository: TaskRepository) {}
 
