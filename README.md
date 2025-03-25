@@ -7,59 +7,63 @@
 ## Descrição
 
 Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar projetos e tarefas em um sistema de quadro Kanban.
-
 ## Como rodar o projeto
 
 Para rodar o projeto, siga os passos abaixo:
 
 1. Rode o Docker Compose para iniciar o banco de dados:
 
-   ```sh
-   docker-compose up -d
-   ```
+    ```sh
+    sudo docker compose up -d
+    ```
 
-2. Execute o script `migrate-db.sh` para aplicar as migrações no banco de dados principal e no banco de dados de testes:
+2. Crie o arquivo `.env` com base no `.env.example`:
+
+    ```sh
+    cp .env.example .env
+    ```
+
+3. Execute o script `migrate-db.sh` para aplicar as migrações no banco de dados principal e no banco de dados de testes:
 
 linux:
 
 ```sh
-./scripts/migrate-db.sh
+bash ./migrate-db.sh
 ```
 
 windows:
 
 ```sh
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; .\run_migrations.ps1
-
 ```
 
-3. Instale as dependências do projeto:
+4. Instale as dependências do projeto:
 
-   ```sh
-   npm install
-   ```
+    ```sh
+    npm install
+    ```
 
-4. Gere os arquivos do Prisma e aplique as migrações do banco de dados:
+5. Gere os arquivos do Prisma e aplique as migrações do banco de dados:
 
-   ```sh
-   npm run build
-   ```
+    ```sh
+    npm run build
+    ```
 
-5. Inicie a aplicação em modo de desenvolvimento:
+6. Inicie a aplicação em modo de desenvolvimento:
 
-   ```sh
-   npm run start:dev
-   ```
+    ```sh
+    npm run start:dev
+    ```
 
-6. Para iniciar a aplicação em modo de produção:
+7. Para iniciar a aplicação em modo de produção:
 
-   ```sh
-   npm run start:prod
-   ```
+    ```sh
+    npm run start:prod
+    ```
 
-7. Acesse `http://localhost:3000/api/v1/` para ver a rota de health check e verificar se está rodando
+8. Acesse `http://localhost:3000/api/v1/` para ver a rota de health check e verificar se está rodando
 
-8. Acesse `http://localhost:3000/api/v1/docs` para ver as possíveis rotas pela documentação do swagger
+9. Acesse `http://localhost:3000/api/v1/docs` para ver as possíveis rotas pela documentação do swagger
 
 ## Como rodar os testes
 
