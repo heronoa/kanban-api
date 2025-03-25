@@ -7,21 +7,22 @@
 ## Descrição
 
 Esta é uma API RESTful desenvolvida com Node.js e TypeScript para gerenciar projetos e tarefas em um sistema de quadro Kanban.
+
 ## Como rodar o projeto
 
 Para rodar o projeto, siga os passos abaixo:
 
 1. Rode o Docker Compose para iniciar o banco de dados:
 
-    ```sh
-    sudo docker compose up -d
-    ```
+   ```sh
+   sudo docker compose up -d
+   ```
 
 2. Crie o arquivo `.env` com base no `.env.example`:
 
-    ```sh
-    cp .env.example .env
-    ```
+   ```sh
+   cp .env.example .env
+   ```
 
 3. Execute o script `migrate-db.sh` para aplicar as migrações no banco de dados principal e no banco de dados de testes:
 
@@ -39,27 +40,27 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; .\run_migrations.ps1
 
 4. Instale as dependências do projeto:
 
-    ```sh
-    npm install
-    ```
+   ```sh
+   npm install
+   ```
 
 5. Gere os arquivos do Prisma e aplique as migrações do banco de dados:
 
-    ```sh
-    npm run build
-    ```
+   ```sh
+   npm run build
+   ```
 
 6. Inicie a aplicação em modo de desenvolvimento:
 
-    ```sh
-    npm run start:dev
-    ```
+   ```sh
+   npm run start:dev
+   ```
 
 7. Para iniciar a aplicação em modo de produção:
 
-    ```sh
-    npm run start:prod
-    ```
+   ```sh
+   npm run start:prod
+   ```
 
 8. Acesse `http://localhost:3000/api/v1/` para ver a rota de health check e verificar se está rodando
 
@@ -407,28 +408,12 @@ kanban-api/
 - `PATCH /tasks/:id/move` - Mover tarefa entre projetos
 - `DELETE /tasks/:id` - Remover tarefa
 
-## Como Executar
+## Mudanças Futuras
 
-Para rodar a aplicação:
-
-```sh
-npm run start
-```
-
-Para rodar os testes de unidade:
-
-```sh
-npm run test:unit
-```
-
-Para rodar os testes de integração:
-
-```sh
-npm run test:integration
-```
-
-Para verificar a cobertura dos testes:
-
-```sh
-npm run test:coverage
-```
+- Implementação de tratamento de cookies para gerenciar sessões de usuário e preferências;
+- Adição de outros tipos de roles para autorização, permitindo um controle de acesso mais granular;
+- Notificações em tempo real (e.g., WebSockets, Firebase);
+- Implementação de um sistema de comentários para tarefas e projetos;
+- Adição de suporte a anexos em tarefas e projetos, utilizando Amazon S3 para armazenamento seguro e escalável;
+- Implementação de Sentry para monitoramento e rastreamento de erros em tempo real, facilitando a identificação e correção de problemas na aplicação;
+- Dockerização da aplicação para servir com EC2.
