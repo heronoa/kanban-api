@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { CreateTokenUseCase } from '@/application/use-cases/auth/create-token.use-case';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { RefreshTokenRepository } from '@/domain/repositories/refreshToken.repository';
+import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { RefreshTokenRepository } from '@/domain/repositories/refreshToken.repos
     CreateTokenUseCase,
     LoginUseCase,
     RegisterUseCase,
+    RefreshTokenUseCase,
     UserRepository,
     RefreshTokenRepository,
     PrismaService,
