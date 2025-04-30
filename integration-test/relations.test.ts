@@ -61,11 +61,11 @@ describe('Kanban API - Integration Tests', () => {
   it('should register users', async () => {
     const res1 = await registerUser(user1);
     userId1 = res1.user.id;
-    token = res1.token;
+    token = res1.accessToken;
 
     const res2 = await registerUser(user2);
     userId2 = res2.user.id;
-    token2 = res2.token;
+    token2 = res2.accessToken;
   });
 
   it('should authenticate a user and return a token', async () => {

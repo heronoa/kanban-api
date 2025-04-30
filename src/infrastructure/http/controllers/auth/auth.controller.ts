@@ -34,7 +34,8 @@ export class AuthController implements AuthControllerType {
           role: 'USER',
           createdAt: '2021-09-01T00:00:00.000Z',
         },
-        token: 'hashedtoken',
+        accessToken: 'hashedJWT',
+        refreshToken: 'hasheduuidv4',
       },
     },
   })
@@ -68,7 +69,6 @@ export class AuthController implements AuthControllerType {
           role: 'USER',
           createdAt: '2021-09-01T00:00:00.000Z',
         },
-        token: 'hashedtoken',
       },
     },
   })

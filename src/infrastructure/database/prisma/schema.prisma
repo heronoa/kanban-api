@@ -20,6 +20,17 @@ model User {
   Project Project[]
 
   Task Task[]
+
+  refreshToken RefreshToken[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  token     String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
 }
 
 model Project {

@@ -7,6 +7,7 @@ import { PrismaService } from '@/infrastructure/database/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { CreateTokenUseCase } from '@/application/use-cases/auth/create-token.use-case';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { RefreshTokenRepository } from '@/domain/repositories/refreshToken.repository';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     LoginUseCase,
     RegisterUseCase,
     UserRepository,
+    RefreshTokenRepository,
     PrismaService,
   ],
   controllers: [AuthController],

@@ -15,6 +15,7 @@ describe('Kanban API - Integration Tests', () => {
   let app: INestApplication;
   let prisma: PrismaService;
   let token: string;
+  // let refreshToken: string;
   let projectId: string;
   let taskId: string;
   let userId: string;
@@ -54,7 +55,8 @@ describe('Kanban API - Integration Tests', () => {
         password: 'password123',
       });
       expect(res.status).toBe(201);
-      token = res.body.token;
+      token = res.body.accessToken;
+      // refreshToken = res.body.refreshToken;
       expect(token).toBeDefined();
     });
   });
