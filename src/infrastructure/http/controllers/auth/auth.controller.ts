@@ -5,10 +5,15 @@ import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
 import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
 import { RegisterDto } from '@/domain/dto/auth/register.dto';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { RefreshTokenDto } from '@/domain/dto/auth/refresh-reponse.dto';
+import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case';
 
 interface AuthControllerType {
   login: (loginDto: LoginDto) => Promise<AuthResponseDto>;
   register: (registerDto: RegisterDto) => Promise<AuthResponseDto>;
+  refreshToken: (refreshTokenDto: {
+    refreshToken: string;
+  }) => Promise<AuthResponseDto>;
 }
 
 @ApiTags('Authentication')
@@ -17,6 +22,7 @@ export class AuthController implements AuthControllerType {
   constructor(
     private readonly loginUseCase: LoginUseCase,
     private readonly registerUseCase: RegisterUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
   ) {}
 
   @Post('login')
@@ -34,7 +40,8 @@ export class AuthController implements AuthControllerType {
           role: 'USER',
           createdAt: '2021-09-01T00:00:00.000Z',
         },
-        token: 'hashedtoken',
+        accessToken: 'hashedJWT',
+        refreshToken: 'hasheduuidv4',
       },
     },
   })
@@ -68,7 +75,6 @@ export class AuthController implements AuthControllerType {
           role: 'USER',
           createdAt: '2021-09-01T00:00:00.000Z',
         },
-        token: 'hashedtoken',
       },
     },
   })
@@ -77,5 +83,20 @@ export class AuthController implements AuthControllerType {
   @ApiBody({ type: RegisterDto })
   async register(@Body() registerDto: RegisterDto): Promise<AuthResponseDto> {
     return this.registerUseCase.execute(registerDto);
+  }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refresh token - renew access and refresh tokens' })
+  @ApiResponse({
+    status: 200,
+    description: 'Tokens renewed successfully',
+    type: AuthResponseDto,
+  })
+  @ApiResponse({ status: 401, description: 'Invalid or expired refresh token' })
+  @ApiBody({ type: RefreshTokenDto })
+  async refreshToken(
+    @Body() { refreshToken }: RefreshTokenDto,
+  ): Promise<AuthResponseDto> {
+    return this.refreshTokenUseCase.execute(refreshToken);
   }
 }

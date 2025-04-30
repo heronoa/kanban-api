@@ -19,5 +19,8 @@ export class AuthResponseDto {
   user: Omit<UserResponse, 'password'>;
 
   @ApiProperty()
-  token: string;
+  accessToken: string;
+
+  @ApiProperty()
+  refreshToken: string;
 }
