@@ -4,6 +4,7 @@ import { LoginUseCase } from '@/application/use-cases/auth/login.use-case';
 import { RegisterUseCase } from '@/application/use-cases/auth/register.use-case';
 import { JwtService } from '@nestjs/jwt';
 import { AuthResponseDto } from '@/domain/dto/auth/auth-reponse.dto';
+import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case';
 
 describe('AuthController - Login', () => {
   let authController: AuthController;
@@ -27,6 +28,10 @@ describe('AuthController - Login', () => {
           provide: JwtService,
           useValue: { sign: jest.fn() },
         },
+        {
+          provide: RefreshTokenUseCase,
+          useValue: { execute: jest.fn() },
+        },
       ],
     }).compile();
 
@@ -37,7 +42,8 @@ describe('AuthController - Login', () => {
 
   it('should successfully login and return a token', async () => {
     const mockToken: AuthResponseDto = {
-      token: 'token',
+      accessToken: 'token',
+      refreshToken: 'refreshToken',
       user: {
         id: '1',
         email: '',
