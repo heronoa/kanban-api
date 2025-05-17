@@ -25,6 +25,10 @@ describe('AuthController - Login', () => {
           useValue: { execute: jest.fn() },
         },
         {
+          provide: RefreshTokenUseCase,
+          useValue: { execute: jest.fn() },
+        },
+        {
           provide: JwtService,
           useValue: { sign: jest.fn() },
         },
@@ -42,8 +46,8 @@ describe('AuthController - Login', () => {
 
   it('should successfully login and return a token', async () => {
     const mockToken: AuthResponseDto = {
-      accessToken: 'token',
-      refreshToken: 'refreshToken',
+      accessToken: 'mockToken',
+      refreshToken: 'mockRefreshToken',
       user: {
         id: '1',
         email: '',

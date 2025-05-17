@@ -22,6 +22,10 @@ model User {
   Task Task[]
 
   refreshToken RefreshToken[]
+
+  UserProjects UserProjects[]
+
+  UserTasks UserTasks[]
 }
 
 model RefreshToken {
@@ -43,6 +47,8 @@ model Project {
   createdAt   DateTime @default(now())
 
   Task Task[]
+
+  UserProjects UserProjects[]
 }
 
 model Task {
@@ -51,12 +57,36 @@ model Task {
   description String?
   status      TaskStatus @default(TO_DO)
   projectId   String
-  project     Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project     Project   @relation(fields: [projectId], references: [id])
   assignedTo  String?
   user        User?     @relation(fields: [assignedTo], references: [id], onDelete: SetNull)
   users       User[]    @relation("UserTasks")  
   createdAt   DateTime  @default(now())
 
+
+  UserTasks UserTasks[]
+}
+
+model UserProjects {
+  userId     String
+  projectId  String
+  createdAt  DateTime @default(now())
+  
+  user       User     @relation(fields: [userId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id])
+
+  @@id([userId, projectId])
+}
+
+model UserTasks {
+  userId     String
+  taskId     String
+  createdAt  DateTime @default(now())
+  
+  user       User     @relation(fields: [userId], references: [id])
+  task       Task     @relation(fields: [taskId], references: [id])
+
+  @@id([userId, taskId])
 }
 
 enum Role {
