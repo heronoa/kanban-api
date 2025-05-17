@@ -32,6 +32,10 @@ describe('AuthController - Login', () => {
           provide: JwtService,
           useValue: { sign: jest.fn() },
         },
+        {
+          provide: RefreshTokenUseCase,
+          useValue: { execute: jest.fn() },
+        },
       ],
     }).compile();
 

@@ -15,14 +15,13 @@ export class RefreshTokenUseCase {
   ) {}
 
   public async execute(refreshToken: string): Promise<AuthResponseDto> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const session = await this.refreshToken.findByToken(refreshToken);
 
     if (!session || session.expiresAt < new Date()) {
       throw new UnauthorizedException('Refresh token invalid or expired');
     }
 
-    const user = await this.userRepo.findById(session.userId as string);
+    const user = await this.userRepo.findById(session.userId);
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
