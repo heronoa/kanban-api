@@ -5,7 +5,7 @@ import {
   HttpException,
 } from '@nestjs/common';
 import { Response } from 'express';
-import { errorLogger } from '../logging/winston.logger';
+import { logger } from '../logging/winston.logger';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -18,7 +18,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
 
     const message =
       exception instanceof Error ? exception.message : 'Unknown error';
-    errorLogger.error(`${request.method} ${request.url} - ${message}`);
+    logger.error(`${request.method} ${request.url} - ${message}`);
 
     response.status(status).json({
       statusCode: status,
