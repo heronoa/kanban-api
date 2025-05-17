@@ -8,7 +8,7 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: kanban
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - pgdata:/var/lib/postgresql/data
 
@@ -21,10 +21,27 @@ services:
       POSTGRES_PASSWORD: admin
       POSTGRES_DB: kanban
     ports:
-      - "5434:5432"  # Porta do host agora é 5433 para evitar conflito
+      - '5434:5432'
     volumes:
-      - pgdata-test:/var/lib/postgresql/data  # Volume separado para evitar conflitos de dados
+      - pgdata-test:/var/lib/postgresql/data
+
+  loki:
+    image: grafana/loki:2.9.2
+    ports:
+      - '3100:3100'
+    command: -config.file=/etc/loki/local-config.yaml
+
+  grafana:
+    image: grafana/grafana:10.4.1
+    ports:
+      - '3300:3000'
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
 volumes:
   pgdata:
-  pgdata-test:
+  pgdata-test: 
+  grafana-storage:
