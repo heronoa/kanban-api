@@ -42,6 +42,8 @@ describe('Task Repository - CRUD', () => {
     await prisma.task.deleteMany({});
     await prisma.project.deleteMany({});
     await prisma.user.deleteMany({});
+    await prisma.userProjects.deleteMany({});
+    await prisma.userTasks.deleteMany({});
     await prisma.$disconnect();
   });
 

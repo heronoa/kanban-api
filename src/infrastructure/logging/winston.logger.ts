@@ -62,6 +62,10 @@ export function createProductionLogger(): Logger {
 
       new LokiTransport({
         host: process.env.LOKI_HOST,
+        ...(process.env?.LOKI_USER &&
+          process.env?.API_KEY && {
+            basicAuth: `${process.env.LOKI_USER}:${process.env.API_KEY}`,
+          }),
         labels: { app: 'kanban-api', env: 'production' },
         json: true,
         format: baseFormat,
